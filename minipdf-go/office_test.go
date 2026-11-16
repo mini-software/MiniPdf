@@ -5,6 +5,9 @@ import (
 	"bytes"
 	"encoding/xml"
 	"errors"
+	"fmt"
+	"math"
+	"slices"
 	"strings"
 	"testing"
 )
@@ -319,7 +322,7 @@ func TestTextPaginationPreservesSpacingWhenSkippingEmptyPages(t *testing.T) {
 	lines[0], lines[100], lines[152] = "First", "Middle", "Last"
 	for _, skipEmpty := range []bool{false, true} {
 		document := NewPDFDocument()
-		addTextPages(document, lines, PageSizeA4, Margins{}, true, skipEmpty)
+		addTextPages(document, lines, PageSizeA4, Margins{}, true, skipEmpty, 0)
 		pdf := document.Bytes()
 		wantPages := 11
 		if skipEmpty {
@@ -541,6 +544,293 @@ func TestConvertXLSXPaginatesSingleColumnTextOverflow(t *testing.T) {
 	}
 }
 
+func fitToPageWorksheet(sheetProperties, pageSetup string, rows, columns int) string {
+	var worksheet strings.Builder
+	worksheet.WriteString(`<?xml version="1.0"?><worksheet>` + sheetProperties + `<sheetData>`)
+	for row := 1; row <= rows; row++ {
+		fmt.Fprintf(&worksheet, `<row r="%d">`, row)
+		for column := 0; column < columns; column++ {
+			fmt.Fprintf(&worksheet, `<c r="%c%d" t="inlineStr"><is><t>R%dC%d</t></is></c>`, 'A'+column, row, row, column+1)
+		}
+		worksheet.WriteString(`</row>`)
+	}
+	worksheet.WriteString(`</sheetData>` + pageSetup + `</worksheet>`)
+	return worksheet.String()
+}
+
+func TestConvertXLSXFitsWorksheetToPage(t *testing.T) {
+	const fitToPage = `<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr>`
+	tests := []struct {
+		name            string
+		sheetProperties string
+		pageSetup       string
+		pages           int
+		firstPage       []string
+		unscaled        bool
+	}{
+		{
+			name:  "without fit to page columns and rows split",
+			pages: 4, firstPage: []string{"R1C9"}, unscaled: true,
+		},
+		{
+			name: "default fit is one page wide and one page tall", sheetProperties: fitToPage,
+			pageSetup: `<pageSetup orientation="landscape"/>`,
+			pages:     1, firstPage: []string{"R1C1", "R1C12", "R60C12"},
+		},
+		{
+			name: "automatic height keeps every column on each page", sheetProperties: fitToPage,
+			pageSetup: `<pageSetup fitToHeight="0"/>`,
+			pages:     2, firstPage: []string{"R1C1", "R1C12"}, unscaled: true,
+		},
+		{
+			name: "page counts apply in both directions", sheetProperties: fitToPage,
+			pageSetup: `<pageSetup fitToWidth="2" fitToHeight="1"/>`,
+			pages:     2, firstPage: []string{"R1C6", "R60C6"},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			input := officePackageBytes(t, map[string]string{
+				"xl/workbook.xml":          `<?xml version="1.0"?><workbook/>`,
+				"xl/worksheets/sheet1.xml": fitToPageWorksheet(test.sheetProperties, test.pageSetup, 60, 12),
+			})
+
+			pdf, err := ConvertBytesToPDF(input)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if pages := bytes.Count(pdf, []byte("/Type /Page ")); pages != test.pages {
+				t.Fatalf("PDF page count = %d, want %d", pages, test.pages)
+			}
+			firstPage := pdf[:bytes.Index(pdf, []byte("endstream"))]
+			for _, text := range test.firstPage {
+				if !bytes.Contains(firstPage, []byte(text)) {
+					t.Errorf("first page does not contain %q", text)
+				}
+			}
+			if unscaled := bytes.Contains(pdf, []byte("/F1 11 Tf")); unscaled != test.unscaled {
+				t.Errorf("uses unscaled font size = %t, want %t", unscaled, test.unscaled)
+			}
+		})
+	}
+}
+
+func TestConvertXLSXFitToPageZoomBounds(t *testing.T) {
+	tests := []struct {
+		name      string
+		pageSetup string
+		rows      int
+		pages     int
+		fontSize  string
+	}{
+		{name: "content that already fits keeps its size", rows: 48, pages: 1, fontSize: "/F1 11 Tf"},
+		{name: "one more line shrinks the text", rows: 49, pages: 1, fontSize: "/F1 10.89 Tf"},
+		{name: "several pages share the height", pageSetup: `<pageSetup fitToHeight="2"/>`, rows: 97, pages: 2, fontSize: "/F1 11 Tf"},
+		{name: "Letter height is a multiple of the leading", pageSetup: `<pageSetup paperSize="1" fitToHeight="1"/>`, rows: 95, pages: 1, fontSize: "/F1 5.17 Tf"},
+		{name: "zoom stops at the minimum", rows: 5000, pages: 11, fontSize: "/F1 1.1 Tf"},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			input := officePackageBytes(t, map[string]string{
+				"xl/workbook.xml": `<?xml version="1.0"?><workbook/>`,
+				"xl/worksheets/sheet1.xml": fitToPageWorksheet(
+					`<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr>`, test.pageSetup, test.rows, 3),
+			})
+
+			pdf, err := ConvertBytesToPDF(input)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if pages := bytes.Count(pdf, []byte("/Type /Page ")); pages != test.pages {
+				t.Errorf("PDF page count = %d, want %d", pages, test.pages)
+			}
+			if !bytes.Contains(pdf, []byte(test.fontSize)) {
+				t.Errorf("PDF does not use font size %q", test.fontSize)
+			}
+		})
+	}
+}
+
+func TestConvertXLSXFitToPageSkipsEmptyPages(t *testing.T) {
+	tests := []struct {
+		name      string
+		rows      []int
+		lastRow   int
+		fitHeight int
+		pages     int
+		fontSize  string
+	}{
+		{name: "trailing empty pages", rows: []int{1}, lastRow: 5000, fitHeight: 1, pages: 1, fontSize: "/F1 11 Tf"},
+		{name: "widely separated text fits two visible pages", rows: []int{1, 1000}, lastRow: 1001, fitHeight: 2, pages: 2, fontSize: "/F1 11 Tf"},
+		{name: "leading and interior empty pages", rows: []int{101, 153}, lastRow: 510, fitHeight: 2, pages: 2, fontSize: "/F1 11 Tf"},
+		{name: "sparse pages choose the largest fitting zoom", rows: []int{1, 100, 147}, lastRow: 510, fitHeight: 2, pages: 2, fontSize: "/F1 10.89 Tf"},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			var sheet strings.Builder
+			sheet.WriteString(`<worksheet><sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><sheetData>`)
+			for _, row := range test.rows {
+				fmt.Fprintf(&sheet, `<row r="%d"><c r="A%d" t="inlineStr"><is><t>Text%d</t></is></c></row>`, row, row, row)
+			}
+			fmt.Fprintf(&sheet, `<row r="%d"/></sheetData><pageSetup fitToHeight="%d"/></worksheet>`, test.lastRow, test.fitHeight)
+			pdf, err := ConvertBytesToPDF(officePackageBytes(t, map[string]string{
+				"xl/workbook.xml":          `<workbook/>`,
+				"xl/worksheets/sheet1.xml": sheet.String(),
+			}))
+			if err != nil {
+				t.Fatal(err)
+			}
+			if pages := bytes.Count(pdf, []byte("/Type /Page ")); pages != test.pages {
+				t.Errorf("page count = %d, want %d", pages, test.pages)
+			}
+			if !bytes.Contains(pdf, []byte(test.fontSize)) {
+				t.Errorf("PDF does not use font size %q", test.fontSize)
+			}
+			for _, row := range test.rows {
+				if !bytes.Contains(pdf, []byte(fmt.Sprintf("Text%d", row))) {
+					t.Errorf("PDF lost text from row %d", row)
+				}
+			}
+		})
+	}
+}
+
+func TestTextFitPreservesSpacingWhenSkippingEmptyPages(t *testing.T) {
+	lines := make([]string, 510)
+	lines[0], lines[100], lines[152] = "First", "Middle", "Last"
+	document := NewPDFDocument()
+	addTextPages(document, lines, PageSizeA4, Margins{}, true, true, 3)
+	assertPDFContains(t, document.Bytes(), nil, "/F1 11 Tf", "54 787.89 Td", "54 757.89 Td", "54 712.89 Td")
+}
+
+func TestTextFitEmptyPagesAndMinimumZoom(t *testing.T) {
+	for _, skipEmpty := range []bool{false, true} {
+		t.Run(fmt.Sprintf("skipEmpty=%t", skipEmpty), func(t *testing.T) {
+			for _, test := range []struct {
+				name          string
+				lines         []string
+				pages         int
+				nonemptyPages int
+				fontSize      float64
+			}{
+				{name: "no lines", pages: 1, fontSize: baseFontSize},
+				{name: "Unicode whitespace", lines: []string{"", " \t", "\u2003\u3000"}, pages: 1, fontSize: baseFontSize},
+				{name: "blank pagination windows", lines: make([]string, 100), pages: 1, fontSize: baseFontSize * 49 / 100},
+				{name: "only minimum zoom fits", lines: strings.Split(strings.Repeat("Text\n", 488)+"Text", "\n"), pages: 1, nonemptyPages: 1, fontSize: 1.1},
+			} {
+				t.Run(test.name, func(t *testing.T) {
+					document := NewPDFDocument()
+					addTextPages(document, test.lines, PageSizeA4, Margins{}, true, skipEmpty, 1)
+					wantPages := test.pages
+					if skipEmpty {
+						wantPages = test.nonemptyPages
+					}
+					if pages := len(document.pages); pages != wantPages {
+						t.Fatalf("page count = %d, want %d", pages, wantPages)
+					}
+					for _, page := range document.pages {
+						for _, operation := range page.operations {
+							text, ok := operation.(textOperation)
+							if !ok || text.fontSize != test.fontSize {
+								t.Errorf("operation = %#v, want text at %gpt", operation, test.fontSize)
+							}
+						}
+					}
+				})
+			}
+		})
+	}
+}
+
+func TestTextFitScalesLineSpacing(t *testing.T) {
+	lines := make([]string, 100)
+	lines[0], lines[99] = "First", "Last"
+	for _, skipEmpty := range []bool{false, true} {
+		t.Run(fmt.Sprintf("skipEmpty=%t", skipEmpty), func(t *testing.T) {
+			document := NewPDFDocument()
+			addTextPages(document, lines, PageSizeA4, Margins{}, true, skipEmpty, 1)
+			if len(document.pages) != 1 {
+				t.Fatalf("page count = %d, want 1", len(document.pages))
+			}
+			var texts []textOperation
+			for _, operation := range document.pages[0].operations {
+				if text, ok := operation.(textOperation); ok && text.text != "" {
+					texts = append(texts, text)
+				}
+			}
+			if len(texts) != 2 {
+				t.Fatalf("nonempty text operations = %d, want 2", len(texts))
+			}
+			// 49% is the largest integer zoom that fits all 100 line positions.
+			for _, text := range texts {
+				if text.fontSize != baseFontSize*49/100 {
+					t.Errorf("font size = %g, want %g", text.fontSize, baseFontSize*49/100)
+				}
+			}
+			wantDistance := 99 * baseLeading * 49 / 100
+			if distance := texts[0].y - texts[1].y; math.Abs(distance-wantDistance) > 1e-9 {
+				t.Errorf("line distance = %g, want %g", distance, wantDistance)
+			}
+		})
+	}
+}
+
+func TestWrapTextPreservesWhitespaceAndUnicode(t *testing.T) {
+	for _, test := range []struct {
+		name, text string
+		limit      int
+		want       []string
+	}{
+		{name: "empty", want: []string{""}, limit: 10},
+		{name: "hard breaks", text: "abcdefghij", limit: 3, want: []string{"abc", "def", "ghi", "j"}},
+		{name: "word breaks", text: "alpha beta gamma", limit: 10, want: []string{"alpha", "beta gamma"}},
+		{name: "unicode spaces", text: "猫狗\u2003鱼鸟\u2003山水", limit: 4, want: []string{"猫狗", "鱼鸟", "山水"}},
+		{name: "newlines", text: "ab\n\ncd\n", limit: 3, want: []string{"ab", "", "cd", ""}},
+		{name: "trailing spaces", text: "abcd  ", limit: 3, want: []string{"abc", "d  "}},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			got := wrapText(test.text, test.limit)
+			if !slices.Equal(got, test.want) {
+				t.Errorf("wrapped lines = %q, want %q", got, test.want)
+			}
+		})
+	}
+}
+
+func BenchmarkWrapTextLongCell(b *testing.B) {
+	for _, length := range []int{10000, 20000} {
+		b.Run(fmt.Sprint(length), func(b *testing.B) {
+			text := strings.Repeat("X", length)
+			b.ReportAllocs()
+			b.SetBytes(int64(length))
+			b.ResetTimer()
+			for i := 0; i < b.N; i++ {
+				wrapText(text, 85)
+			}
+		})
+	}
+}
+
+func TestConvertXLSXFitToPageWrapsLongText(t *testing.T) {
+	input := officePackageBytes(t, map[string]string{
+		"xl/workbook.xml": `<?xml version="1.0"?><workbook/>`,
+		"xl/worksheets/sheet1.xml": `<?xml version="1.0"?><worksheet><sheetPr><pageSetUpPr fitToPage="1"/></sheetPr>` +
+			`<sheetData><row r="1"><c r="A1" t="inlineStr"><is><t>` + strings.Repeat("word ", 1200) +
+			`</t></is></c></row></sheetData></worksheet>`,
+	})
+
+	pdf, err := ConvertBytesToPDF(input)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if words := bytes.Count(pdf, []byte("word")); words != 1200 {
+		t.Fatalf("rendered word count = %d, want 1200", words)
+	}
+	if pages := bytes.Count(pdf, []byte("/Type /Page ")); pages != 1 {
+		t.Fatalf("PDF page count = %d, want 1", pages)
+	}
+}
+
 func TestExtractWorksheetPreservesSparseRows(t *testing.T) {
 	worksheet := []byte(`<?xml version="1.0"?><worksheet><sheetData>` +
 		`<row r="1"><c r="A1" t="inlineStr"><is><t>First</t></is></c></row>` +
@@ -548,7 +838,7 @@ func TestExtractWorksheetPreservesSparseRows(t *testing.T) {
 		`<row r="10"><c r="A10" t="inlineStr"><is><t>Tenth</t></is></c></row>` +
 		`</sheetData></worksheet>`)
 
-	lines, _, err := extractWorksheet(worksheet, nil)
+	lines, _, _, err := extractWorksheet(worksheet, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -568,7 +858,7 @@ func TestExtractWorksheetPreservesSparseColumns(t *testing.T) {
 		`<c r="J2" t="inlineStr"><is><t>Far</t></is></c></row>` +
 		`</sheetData></worksheet>`)
 
-	lines, _, err := extractWorksheet(worksheet, nil)
+	lines, _, _, err := extractWorksheet(worksheet, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -582,7 +872,7 @@ func TestExtractWorksheetFormatsBooleanCells(t *testing.T) {
 		`<c r="A1" t="b"><v>1</v></c><c r="B1" t="b"><v>0</v></c>` +
 		`<c r="C1" t="n"><v>1</v></c></row></sheetData></worksheet>`)
 
-	lines, _, err := extractWorksheet(worksheet, nil)
+	lines, _, _, err := extractWorksheet(worksheet, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
