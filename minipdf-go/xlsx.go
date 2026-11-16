@@ -9,6 +9,13 @@ import (
 	"strings"
 )
 
+// worksheetFit is a worksheet's fit-to-page request. A page count of zero
+// leaves that direction unconstrained.
+type worksheetFit struct {
+	enabled       bool
+	width, height int
+}
+
 func convertXLSX(input []byte, options ConversionOptions) ([]byte, error) {
 	files, err := openOfficePackage(input)
 	if err != nil {
@@ -59,7 +66,7 @@ func convertXLSX(input []byte, options ConversionOptions) ([]byte, error) {
 		if readErr != nil {
 			return nil, readErr
 		}
-		lines, pageSize, parseErr := extractWorksheet(worksheetXML, sharedStrings)
+		lines, pageSize, fit, parseErr := extractWorksheet(worksheetXML, sharedStrings)
 		if parseErr != nil {
 			return nil, fmt.Errorf("parse %s: %w", name, parseErr)
 		}
@@ -85,16 +92,27 @@ func convertXLSX(input []byte, options ConversionOptions) ([]byte, error) {
 				break
 			}
 		}
-		for _, group := range splitWorksheetColumnGroups(lines, 9) {
+		// A fitted sheet keeps its columns within the requested page count
+		// instead of splitting them into fixed groups.
+		columnsPerPage := 9
+		fitWidth := fit.enabled && fit.width > 0
+		fitHeight := 0
+		if fit.enabled {
+			fitHeight = fit.height
+		}
+		if fitWidth {
+			columnsPerPage = max(columnsPerPage, (worksheetColumnCount(lines)+fit.width-1)/fit.width)
+		}
+		for _, group := range splitWorksheetColumnGroups(lines, columnsPerPage) {
 			overflowPages := [][]string{group}
 			noWrap := false
-			if worksheetColumnCount(group) == 1 {
-				overflowPages = splitWorksheetTextOverflow(group, textCharactersPerLine(effectivePageSize, Margins{}))
+			if !fitWidth && worksheetColumnCount(group) == 1 {
+				overflowPages = splitWorksheetTextOverflow(group, textCharactersPerLine(effectivePageSize, Margins{}, baseFontSize))
 				noWrap = len(overflowPages) > 1
 			}
 			for _, overflowPage := range overflowPages {
 				overflowPage = append([]string{""}, overflowPage...)
-				addTextPages(document, overflowPage, effectivePageSize, Margins{}, noWrap, hasText)
+				addTextPages(document, overflowPage, effectivePageSize, Margins{}, noWrap, hasText, fitHeight)
 			}
 		}
 	}
@@ -383,9 +401,10 @@ func readSharedStrings(files officePackage) ([]string, error) {
 	return values, nil
 }
 
-func extractWorksheet(data []byte, sharedStrings []string) ([]string, PageSize, error) {
+func extractWorksheet(data []byte, sharedStrings []string) ([]string, PageSize, worksheetFit, error) {
 	decoder := xml.NewDecoder(bytes.NewReader(data))
 	pageSize := PageSizeA4
+	fit := worksheetFit{width: 1, height: 1}
 	var lines []string
 	var row []string
 	rowNumber := 0
@@ -395,7 +414,7 @@ func extractWorksheet(data []byte, sharedStrings []string) ([]string, PageSize, 
 			if err.Error() == "EOF" {
 				break
 			}
-			return nil, PageSize{}, err
+			return nil, PageSize{}, worksheetFit{}, err
 		}
 		switch element := token.(type) {
 		case xml.StartElement:
@@ -413,15 +432,24 @@ func extractWorksheet(data []byte, sharedStrings []string) ([]string, PageSize, 
 				}
 				value, cellErr := decodeWorksheetCell(decoder, element, sharedStrings)
 				if cellErr != nil {
-					return nil, PageSize{}, cellErr
+					return nil, PageSize{}, worksheetFit{}, cellErr
 				}
 				row = append(row, value)
+			case "pageSetUpPr":
+				value := attrValue(element, "fitToPage")
+				fit.enabled = value == "1" || value == "true"
 			case "pageSetup":
 				if attrValue(element, "paperSize") == "1" {
 					pageSize = PageSizeLetter
 				}
 				if attrValue(element, "orientation") == "landscape" {
 					pageSize.Width, pageSize.Height = pageSize.Height, pageSize.Width
+				}
+				if pages, parseErr := strconv.Atoi(attrValue(element, "fitToWidth")); parseErr == nil && pages >= 0 {
+					fit.width = pages
+				}
+				if pages, parseErr := strconv.Atoi(attrValue(element, "fitToHeight")); parseErr == nil && pages >= 0 {
+					fit.height = pages
 				}
 			}
 		case xml.EndElement:
@@ -433,7 +461,7 @@ func extractWorksheet(data []byte, sharedStrings []string) ([]string, PageSize, 
 			}
 		}
 	}
-	return lines, pageSize, nil
+	return lines, pageSize, fit, nil
 }
 
 func worksheetColumnIndex(reference string) int {
