@@ -1,7 +1,7 @@
 [![NuGet](https://img.shields.io/nuget/v/MiniPdf.Cli.svg)](https://www.nuget.org/packages/MiniPdf.Cli)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/MiniPdf.Cli.svg)](https://www.nuget.org/packages/MiniPdf.Cli)
-[![GitHub stars](https://img.shields.io/github/stars/shps951023/MiniPdf?logo=github)](https://github.com/shps951023/MiniPdf)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/shps951023/MiniPdf/blob/main/LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/mini-software/MiniPdf?logo=github)](https://github.com/mini-software/MiniPdf)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mini-software/MiniPdf/blob/main/LICENSE)
 
 A command-line tool to convert Excel (`.xlsx`), Word (`.docx`), and PowerPoint (`.pptx`) files to PDF.
 Powered by [MiniPdf](https://www.nuget.org/packages/MiniPdf) — zero-dependency, pure .NET.
@@ -70,5 +70,5 @@ for supported features and limitations.
 ## Links
 
 - Library package: [MiniPdf on NuGet](https://www.nuget.org/packages/MiniPdf)
-- Source code: https://github.com/shps951023/MiniPdf
-- License: [Apache-2.0](https://github.com/shps951023/MiniPdf/blob/main/LICENSE)
+- Source code: https://github.com/mini-software/MiniPdf
+- License: [Apache-2.0](https://github.com/mini-software/MiniPdf/blob/main/LICENSE)
