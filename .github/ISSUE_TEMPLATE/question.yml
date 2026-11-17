@@ -15,8 +15,6 @@ body:
       description: Which language implementation is your question about?
       options:
         - .NET (C#)
-        - Rust
-        - Both / shared
     validations:
       required: true
 

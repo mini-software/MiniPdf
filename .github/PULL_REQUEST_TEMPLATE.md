@@ -12,7 +12,7 @@ scores or before-and-after images for rendering changes.
 
 - [ ] The change is focused and does not include unrelated formatting or generated files.
 - [ ] New or changed behavior has automated test coverage where practical.
-- [ ] Relevant .NET and/or Rust checks pass.
+- [ ] Relevant .NET checks pass.
 - [ ] Public API and compatibility effects are documented.
 - [ ] Security implications and untrusted-input behavior were considered.
 - [ ] I have the right to submit every added source file, fixture, font, image, and other asset under its stated license.

@@ -6,7 +6,7 @@ membership list.
 
 | Maintainer | Areas | Affiliation |
 |---|---|---|
-| [@shps951023](https://github.com/shps951023) | Project-wide, .NET, Rust, releases | Not declared |
+| [@shps951023](https://github.com/shps951023) | Project-wide, .NET, releases | Not declared |
 
 The project currently depends on one active maintainer. This is a known
 sustainability risk, not the desired long-term governance model.
@@ -30,7 +30,7 @@ release verification, or community support. The process is defined in
 The project is actively seeking independent maintainers for these areas:
 
 - .NET document layout and PDF generation;
-- Rust XLSX and DOCX rendering;
+- .NET XLSX and DOCX rendering;
 - security and dependency review;
 - test corpus and visual benchmark maintenance; and
 - release preparation and independent verification.
