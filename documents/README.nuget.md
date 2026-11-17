@@ -1,7 +1,7 @@
 [![NuGet](https://img.shields.io/nuget/v/MiniPdf.svg)](https://www.nuget.org/packages/MiniPdf)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/MiniPdf.svg)](https://www.nuget.org/packages/MiniPdf)
-[![GitHub stars](https://img.shields.io/github/stars/shps951023/MiniPdf?logo=github)](https://github.com/shps951023/MiniPdf)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/shps951023/MiniPdf/blob/main/LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/mini-software/MiniPdf?logo=github)](https://github.com/mini-software/MiniPdf)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mini-software/MiniPdf/blob/main/LICENSE)
 
 # MiniPdf for .NET
 
@@ -10,8 +10,7 @@ applications or the command line.
 It runs without Microsoft Office, LibreOffice, Adobe Acrobat, or COM automation.
 
 [Project home](https://github.com/mini-software/MiniPdf) ·
-[Online demo](https://mini-software.github.io/MiniPdf/) ·
-[Rust implementation](https://github.com/mini-software/MiniPdf/tree/main/minipdf-rs)
+[Online demo](https://mini-software.github.io/MiniPdf/)
 
 ## Features
 
@@ -33,6 +32,7 @@ dotnet add package MiniPdf
 ## Usage
 
 ```csharp
+using System.IO;
 using MiniSoftware;
 
 // Excel to PDF
@@ -166,7 +166,9 @@ for commands and options.
 
 ## Benchmark
 
-MiniPdf output is compared against LibreOffice as the reference renderer across 373 test cases.
+MiniPdf output is compared against Microsoft 365 as the primary reference and
+LibreOffice as the auxiliary reference. Use the reports below to evaluate
+representative spreadsheets and documents.
 
 
 
@@ -182,4 +184,4 @@ Detailed reports:
 - Project portal: https://github.com/mini-software/MiniPdf
 - .NET CLI: https://www.nuget.org/packages/MiniPdf.Cli
 - API source: https://github.com/mini-software/MiniPdf/blob/main/src/MiniPdf/MiniPdf.cs
-- License: [Apache-2.0](https://github.com/shps951023/MiniPdf/blob/main/LICENSE)
+- License: [Apache-2.0](https://github.com/mini-software/MiniPdf/blob/main/LICENSE)
