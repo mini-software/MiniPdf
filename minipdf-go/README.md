@@ -8,7 +8,8 @@ The experimental native Go implementation of MiniPdf. It provides a reusable
 
 > The Go implementation is an early foundation and is not feature-equivalent
 > with MiniPdf for .NET or Rust. It currently renders basic text from XLSX,
-> DOCX, and PPTX packages. Complex Office layout is not yet supported.
+> DOCX, and PPTX packages, and a supported subset of DOCX tables. Complex
+> Office layout is not yet supported.
 
 ## Requirements
 
@@ -87,8 +88,11 @@ defer minipdf.ClearRegisteredFonts()
 ```
 
 Registered `.ttf` fonts are embedded as Type0/CID fonts with ToUnicode maps.
-Font subsetting, TrueType Collections, automatic system-font discovery, and
-complex-script shaping are not yet implemented.
+The structured DOCX table renderer also accepts registered TrueType collections
+(the first face), and resolves selected installed Windows fonts, including
+SimSun/SimHei and their Chinese family names. Collections are rebuilt as standalone
+sfnt fonts before PDF embedding. Font subsetting and complex-script shaping are
+not yet implemented. Font binaries are not distributed with MiniPdf.
 
 Override the output page size:
 
@@ -120,13 +124,44 @@ minipdf data.xlsx --max-rows 100 --max-columns 12 --landscape
 | Capability | Go status |
 |---|---|
 | XLSX to PDF | Basic cell text and shared strings |
-| DOCX to PDF | Basic paragraphs, tabs, line breaks, and explicit page breaks |
+| DOCX to PDF | Basic text; supported table documents also preserve grid widths, horizontal/vertical merges, borders, fills, run fonts, highlights, paragraph spacing/alignment, and PNG/JPEG drawings |
 | PPTX to PDF | Basic slide text |
 | PDF output | Dependency-free PDF 1.4 writer |
 | Page size | Office geometry, A4/Letter presets, or custom points |
 | Fonts | Embedded registered TTF fonts with ToUnicode; printed XLSX grids can use installed Windows Calibri/Arial variants |
 | Input safety | Bounded ZIP entry count, size, expansion ratio, encryption, and path validation |
 | Interfaces | Go package with file, byte, and stream APIs; native CLI |
+
+Single-page DOCX documents with non-nested, non-floating table grids can use the
+structured renderer. It resolves paragraph/style inheritance and theme fonts, uses glyph
+metrics for wrapping, respects East Asian punctuation boundaries, and honors
+Word's FE-layout CJK metric compatibility flag. Images use their package
+relationships and DrawingML extents; simple VML text-box images use their margin
+offsets and text-box insets. Image decoding is limited to 25 million pixels.
+Missing or invalid embedded images produce errors rather than disappearing.
+
+Documents requiring unsupported section changes, numbering, anchored drawings,
+text-bearing VML text boxes, omitted row grid columns (`gridBefore`/`gridAfter`),
+exact-height rows, multi-page structured layout, or referenced EMF/WMF images
+retain the existing text converter. If measured paragraph, inline-image, or
+table flow would cross the first page's content boundary, the entire document
+uses the text converter; structured pagination, keep rules, and row splitting
+are not implemented. Tables extending beyond the physical page width also retain
+text conversion. Metafile formats are checked before
+structured rendering; malformed PNG/JPEG images still produce decoding errors.
+Linked-only images and inline paragraphs mixing images with text, multiple images,
+or explicit line breaks also retain text conversion. Single image-only paragraphs
+honor alignment, indentation, and paragraph spacing. Line-grid snapping requires
+`docGrid` type `lines` or `linesAndChars`; an omitted/default type does not snap.
+Dashed borders use a single native PDF stroke, without retained segment expansion.
+Images inside table cells, complex drawing geometry, conditional
+table styles, headers/footers, and complex-script shaping remain unsupported.
+Structured text uses matching registered fonts or selected licensed Windows
+fonts, with Arial/SimSun glyph fallback when available. Requested bold/italic is
+synthesized only when the loaded face lacks that emphasis. An unavailable host
+font required for Unicode text retains legacy conversion; a present font with
+missing glyphs still produces an explicit error on the structured path. Fonts are embedded without
+subsetting, so large CJK fonts can substantially increase PDF size.
 
 XLSX text output skips entirely empty pages within worksheets containing text,
 including empty horizontal column groups and pages from trailing formatted rows.
