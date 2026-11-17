@@ -1,14 +1,9 @@
 <div align="center">
 
-**轻量、快速且原生的 Office 转 PDF 库和命令行工具，支持 Rust、.NET、Java、Python、JS 与 Go。**
+**轻量、快速且原生的 Office 转 PDF 库和命令行工具，支持 .NET。**
 
 <p>
 <a href="https://www.nuget.org/packages/MiniPdf"><img src="https://img.shields.io/nuget/v/MiniPdf.svg" alt="NuGet"></a>
-<a href="https://crates.io/crates/minipdf"><img src="https://img.shields.io/crates/v/minipdf.svg" alt="crates.io"></a>
-<a href="https://central.sonatype.com/artifact/io.github.mini-software/minipdf"><img src="https://img.shields.io/maven-central/v/io.github.mini-software/minipdf.svg" alt="Maven Central"></a>
-<a href="https://pypi.org/project/minipdf/"><img src="https://img.shields.io/pypi/v/minipdf.svg" alt="PyPI"></a>
-<a href="https://www.npmjs.com/package/minipdf"><img src="https://img.shields.io/npm/v/minipdf.svg" alt="npm"></a>
-<a href="https://pkg.go.dev/github.com/mini-software/MiniPdf/minipdf-go"><img src="https://pkg.go.dev/badge/github.com/mini-software/MiniPdf/minipdf-go.svg" alt="Go Reference"></a>
 <a href="https://github.com/mini-software/MiniPdf"><img src="https://img.shields.io/github/stars/mini-software/MiniPdf?logo=github" alt="GitHub stars"></a>
 <a href="https://doi.org/10.5281/zenodo.22057294"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.22057294.svg" alt="DOI"></a>
 <a href="../LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License"></a>
@@ -24,6 +19,10 @@
 
 </div>
 
+This repository now maintains **MiniPdf for .NET** only. Rust, Java, Go,
+Python, and Node.js have moved to their own [PdfLibrarys repositories](https://github.com/PdfLibrarys).
+The implementation links below point to those independent repositories.
+
 MiniPdf 无需在运行时安装 Microsoft Office、LibreOffice、Adobe Acrobat 或使用 COM 自动化，即可将 Office 文档直接转换为 PDF。
 
 ## 选择实现
@@ -31,11 +30,11 @@ MiniPdf 无需在运行时安装 Microsoft Office、LibreOffice、Adobe Acrobat 
 | 实现 | 输入 | 接口 | 成熟度 | 文档 | 视觉结果 |
 |---|---|---|---|---|---|
 | .NET | XLSX、DOCX、PPTX | 库、CLI、Native AOT 二进制文件 | 稳定 | **[.NET 指南](README.nuget.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=docx)**<br>**[PPTX](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=issue&format=pptx)** |
-| Rust | XLSX、DOCX、PPTX | Crate、CLI | 稳定 | **[Rust 指南](../minipdf-rs/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=docx)** |
-| Java | XLSX、DOCX、PPTX | 库、CLI | 实验性 | **[Java 源代码](../minipdf-java/)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=java&suite=issue&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=java&suite=issue&format=docx)** |
-| Python | DOCX | 包、CLI | 稳定 | **[Python 指南](../minipdf-python/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=python&suite=issue&format=xlsx)** |
-| Node.js | XLSX、DOCX、PPTX | 原生包 | 稳定 | **[Node.js 指南](../minipdf-node/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=node&suite=issue&format=xlsx)** |
-| Go | XLSX、DOCX、PPTX | 包、CLI | 实验性 | **[Go 指南](../minipdf-go/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=go&suite=issue&format=xlsx)** |
+| Rust | XLSX、DOCX、PPTX | Crate、CLI | 稳定 | **[Rust 指南](https://github.com/PdfLibrarys/minipdf-rs/blob/main/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=docx)** |
+| Java | XLSX、DOCX、PPTX | 库、CLI | 实验性 | **[Java 源代码](https://github.com/PdfLibrarys/minipdf-java)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=java&suite=issue&format=xlsx)**<br>**[DOCX](https://mini-software.github.io/minipdf-web-page/?language=java&suite=issue&format=docx)** |
+| Python | DOCX | 包、CLI | 稳定 | **[Python 指南](https://github.com/PdfLibrarys/minipdf-python/blob/main/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=python&suite=issue&format=xlsx)** |
+| Node.js | XLSX、DOCX、PPTX | 原生包 | 稳定 | **[Node.js 指南](https://github.com/PdfLibrarys/minipdf-node/blob/main/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=node&suite=issue&format=xlsx)** |
+| Go | XLSX、DOCX、PPTX | 包、CLI | 实验性 | **[Go 指南](https://github.com/PdfLibrarys/minipdf-go/blob/main/README.md)** | **[XLSX](https://mini-software.github.io/minipdf-web-page/?language=go&suite=issue&format=xlsx)** |
 
 ## 快速开始
 
@@ -60,95 +59,11 @@ minipdf report.docx -o report.pdf
 
 使用方式请查看 [.NET 指南](README.nuget.md)
 
-### Rust
-
-```bash
-cargo add minipdf
-cargo install minipdf-cli
-```
-
-```rust
-minipdf::convert_to_pdf("report.docx", "report.pdf")?;
-```
-
-```bash
-minipdf report.docx -o report.pdf
-```
-
-使用方式请查看 [Rust 指南](../minipdf-rs/README.md)
-
-### Java
-
-[Maven Central artifact](https://central.sonatype.com/artifact/io.github.mini-software/minipdf)
-
-```java
-import io.github.minisoftware.minipdf.MiniPdf;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
-try {
-	MiniPdf.registerFont(
-			"Noto Sans",
-			Files.readAllBytes(Path.of("fonts/NotoSans-Regular.ttf")));
-	MiniPdf.convertToPdf(Path.of("report.docx"), Path.of("report.pdf"));
-} finally {
-	MiniPdf.clearRegisteredFonts();
-}
-```
-
-使用方式请查看 [Java 指南](../minipdf-java/README.md)
-
-### Python
-
-```bash
-pip install minipdf
-```
-
-```python
-import minipdf
-
-minipdf.convert_to_pdf("report.docx", "report.pdf")
-```
-
-使用方式请查看 [Python 指南](../minipdf-python/README.md)
-
-### Node.js
-
-```bash
-npm install minipdf
-```
-
-```javascript
-const minipdf = require('minipdf')
-
-minipdf.convertToPdf('report.docx', 'report.pdf')
-```
-
-使用方式请查看 [Node.js 指南](../minipdf-node/README.md)
-
-### Go
-
-```bash
-go get github.com/mini-software/MiniPdf/minipdf-go@latest
-```
-
-```go
-import minipdf "github.com/mini-software/MiniPdf/minipdf-go"
-
-if err := minipdf.ConvertToPDF("report.docx", "report.pdf"); err != nil {
-	panic(err)
-}
-```
-
-使用方式请查看 [Go 指南](../minipdf-go/README.md)
-
 ## 为什么选择 MiniPdf
 
 - **无需 Office 套件**：转换直接在应用程序或 CLI 内运行。
 - **部署精简**：依赖少，无需外部进程。
 - **适合服务器与 CI**：可用于容器、云服务和流水线。
-- **多语言选择**：可从 .NET、Rust、Java、Python、Node.js 或 Go 使用 MiniPdf。
-- **原生命令行方案**：适用于 .NET、Rust、Java、Python 与 Go。
 
 MiniPdf 专注于实用文档转换，不追求完全复制 Microsoft Office 版式。复杂模板的渲染可能有所不同，请使用在线演示或基准报告评估代表性文件。
 
@@ -168,16 +83,16 @@ Run the minipdf-contribution skill.
 |---|---|
 | [在线演示](https://mini-software.github.io/MiniPdf/) | 在浏览器中试用转换 |
 | [.NET 文档](README.nuget.md) | 稳定版库与 CLI 用法 |
-| [Rust 文档](../minipdf-rs/README.md) | 实验版 crate 与 CLI 用法 |
-| [Java 实现](../minipdf-java/) | 实验性 Maven 库与 CLI 源代码 |
-| [Python 文档](../minipdf-python/README.md) | 实验性包与 CLI 用法 |
-| [Node.js 文档](../minipdf-node/README.md) | 实验性原生包用法 |
-| [Go 文档](../minipdf-go/README.md) | 实验性包与 CLI 用法 |
+| [Rust 文档](https://github.com/PdfLibrarys/minipdf-rs/blob/main/README.md) | 实验版 crate 与 CLI 用法 |
+| [Java 实现](https://github.com/PdfLibrarys/minipdf-java) | 实验性 Maven 库与 CLI 源代码 |
+| [Python 文档](https://github.com/PdfLibrarys/minipdf-python/blob/main/README.md) | 实验性包与 CLI 用法 |
+| [Node.js 文档](https://github.com/PdfLibrarys/minipdf-node/blob/main/README.md) | 实验性原生包用法 |
+| [Go 文档](https://github.com/PdfLibrarys/minipdf-go/blob/main/README.md) | 实验性包与 CLI 用法 |
 | [.NET XLSX 基准](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=xlsx) | 电子表格视觉比较结果 |
 | [.NET DOCX 基准](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=docx) | 文档视觉比较结果 |
 | [Rust XLSX 基准](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=xlsx) | Rust 电子表格视觉比较结果 |
 | [Rust DOCX 基准](https://mini-software.github.io/minipdf-web-page/?language=rust&suite=classic&format=docx) | Rust 文档视觉比较结果 |
-| [Rust 基准流程](../scripts/Run-Rust-Benchmark.ps1) | 生成测试覆盖与比较报告 |
+| [Rust 基准流程](https://github.com/PdfLibrarys/minipdf-rs) | 生成测试覆盖与比较报告 |
 | [社区治理](../GOVERNANCE.md) | 决策、角色、投票和维护者选任 |
 | [路线图](../ROADMAP.md) | 项目范围、实现状态和当前优先事项 |
 | [安全政策](../SECURITY.md) | 私密漏洞报告和支持版本 |

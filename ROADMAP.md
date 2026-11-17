@@ -22,15 +22,18 @@ that improves ownership, release clarity, or repository size.
 MiniExcel is a separate project and is not part of MiniPdf governance or any
 future MiniPdf incubation proposal.
 
+This repository maintains the .NET implementation. Other language implementations
+are maintained independently in [PdfLibrarys](https://github.com/PdfLibrarys).
+
 ## Implementation Status
 
-| Area | .NET | Rust |
-|---|---|---|
-| XLSX to PDF | Stable, with documented compatibility limits | Experimental |
-| DOCX to PDF | Stable, with documented compatibility limits | Experimental |
-| PPTX to PDF | Basic support | Unsupported |
-| Library API | Stable release line | Experimental pre-1.0 release line |
-| CLI | Supported | Experimental |
+| Area | .NET |
+|---|---|
+| XLSX to PDF | Stable, with documented compatibility limits |
+| DOCX to PDF | Stable, with documented compatibility limits |
+| PPTX to PDF | Basic support |
+| Library API | Stable release line |
+| CLI | Supported |
 
 Stable means the implementation is released and covered by the project's normal
 compatibility process. It does not mean complete Microsoft Office layout
@@ -69,7 +72,7 @@ gaps in their release notes.
 
 ### Maintainable Implementations
 
-- Run .NET and Rust validation on every relevant pull request.
+- Run .NET validation on every relevant pull request; other repositories own their language checks.
 - Maintain a versioned format and feature support matrix.
 - Use shared conformance fixtures where behavior should match while allowing
   implementation-specific architecture.

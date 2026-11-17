@@ -22,6 +22,9 @@ fixtures, images, fonts, or generated material and include their source and
 license. MiniPdf does not currently require a separate contributor license
 agreement.
 
+Non-.NET implementations are maintained in their own [PdfLibrarys repositories](https://github.com/PdfLibrarys).
+Use their development and release workflows rather than this repository's commands.
+
 ## Development Setup
 
 Clone your fork and create a focused branch. Keep unrelated formatting,
@@ -43,31 +46,6 @@ and a separate DOCX suite on Windows, where it verifies the required fonts
 before testing. Install these fonts through a licensed system/Office installation
 to run the font-dependent checks locally; do not add font binaries to the repository.
 
-### Rust
-
-Install the stable Rust toolchain, then run:
-
-```powershell
-Set-Location minipdf-rs
-cargo fmt --check
-cargo clippy --workspace --all-targets -- -D warnings
-cargo test --workspace
-```
-
-### Python
-
-Install Python 3.10 or later, then run:
-
-```powershell
-python -m pip install -e ".\minipdf-python[dev]"
-python -m pytest minipdf-python/tests
-python -m ruff check minipdf-python
-python -m ruff format --check minipdf-python
-python -m mypy minipdf-python/src minipdf-python/tests
-python -m build minipdf-python
-python -m twine check minipdf-python/dist/*
-```
-
 ### Documentation
 
 Keep commands, APIs, benchmark results, and report links consistent. Changes to
@@ -79,10 +57,16 @@ README files under `documents/`.
 1. Reproduce the behavior with the smallest useful test or fixture.
 2. Make one focused change at the owning implementation boundary.
 3. Add or update automated tests for behavior changes.
-4. Run the relevant .NET or Rust checks above.
+4. Run the relevant .NET checks above.
 5. For rendering changes, run the narrowest applicable visual benchmark.
 6. Explain compatibility, security, provenance, and documentation effects in
 	 the pull request.
+
+The shared visual evaluator is test tooling, not the Java implementation.
+Install Java 11+ and Maven, build it with
+`mvn -f tests/MiniPdf.Benchmark/pdfbox/pom.xml package`, and provide the Python
+image dependencies and Microsoft 365/LibreOffice reference PDFs before running
+visual comparisons.
 
 Useful focused benchmark commands include:
 
@@ -90,7 +74,6 @@ Useful focused benchmark commands include:
 scripts/Run-Benchmark.ps1 -Filter "border"
 scripts/Run-Benchmark_docx.ps1 -Filter "heading"
 scripts/Run-Benchmark_issues.ps1 -Filter "sa8000"
-scripts/Run-Rust-Benchmark.ps1 -Filter "classic01" -MinimumScore 0.99
 ```
 
 Generated PDFs, PNGs, heatmaps, and reports should only be committed when they

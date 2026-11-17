@@ -10,8 +10,6 @@ body:
       description: Which language implementation does the documentation cover?
       options:
         - .NET (C#)
-        - Rust
-        - Both / shared
         - Not applicable
     validations:
       required: true

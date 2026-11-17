@@ -1,6 +1,9 @@
 # Cross-Language Feature Parity
 
-Last verified: 2026-09-14
+Historical snapshot last verified: 2026-09-14
+
+The non-.NET implementations now live in [PdfLibrarys](https://github.com/PdfLibrarys).
+This snapshot is retained for reference; each repository owns its current capabilities and release process.
 
 This document tracks implementation gaps between MiniPdf for .NET, Rust,
 Java, Go, Python, and Node.js. It is an engineering backlog, not a claim of
@@ -47,18 +50,11 @@ Notes:
   belong in `minipdf-rs`; Node-specific work should focus on API exposure,
   asynchronous execution, packaging, and binding tests.
 - Python renders through the Rust engine via the
-  [`minipdf._native`](minipdf-python/native/src/lib.rs) PyO3 extension built by
+  [`minipdf._native`](https://github.com/PdfLibrarys/minipdf-python/blob/main/native/src/lib.rs) PyO3 extension built by
   the package backend, falling back to the pure Python renderers only when the
   extension is not importable. The capability matrix below describes the pure
   Python fallback.
-- Node.js and Python versions follow the Rust core version. A `rust-vX.Y.Z`
-  release dispatches the NPM and PyPI publish workflows with the same version
-  through
-  [`rust-ecosystem-release.yml`](.github/workflows/rust-ecosystem-release.yml).
-  When bumping the Rust version, update `minipdf-node/package.json` (and
-  `package-lock.json`), `minipdf-python/pyproject.toml`,
-  `minipdf-python/src/minipdf/__init__.py`, and
-  `minipdf-python/native/Cargo.toml` in the same change.
+- Node.js and Python pin their Rust engine by immutable Git revision. Releases are managed independently in their own repositories; the former cross-repository release dispatcher has been removed.
 - `P` does not mean the same depth in every language. The detailed matrices
   below identify the important differences.
 - The public .NET page-size and margin overrides currently apply to DOCX. The
@@ -91,16 +87,16 @@ print scale, rows-per-page, and culture-aware value formatting in
 Evidence:
 
 - Rust currently exposes only `page_size` in
-  [`ConversionOptions`](minipdf-rs/crates/minipdf/src/lib.rs).
+  [`ConversionOptions`](https://github.com/PdfLibrarys/minipdf-rs/blob/main/crates/minipdf/src/lib.rs).
 - Java currently exposes only `pageSize` in
-  [`ConversionOptions`](minipdf-java/minipdf/src/main/java/io/github/minisoftware/minipdf/ConversionOptions.java).
+  [`ConversionOptions`](https://github.com/PdfLibrarys/minipdf-java/blob/main/minipdf/src/main/java/io/github/minisoftware/minipdf/ConversionOptions.java).
 - Go currently exposes page size, DOCX margins, PDF compression, XLSX row and
   column limits, and XLSX orientation in
-  [`ConversionOptions`](minipdf-go/minipdf.go).
+  [`ConversionOptions`](https://github.com/PdfLibrarys/minipdf-go/blob/main/minipdf.go).
 - Python currently exposes only `page_size` in
-  [`ConversionOptions`](minipdf-python/src/minipdf/options.py).
+  [`ConversionOptions`](https://github.com/PdfLibrarys/minipdf-python/blob/main/src/minipdf/options.py).
 - Node.js exposes synchronous Rust conversion bindings in
-  [`lib.rs`](minipdf-node/src/lib.rs); callers must use a worker thread to avoid
+  [`lib.rs`](https://github.com/PdfLibrarys/minipdf-node/blob/main/src/lib.rs); callers must use a worker thread to avoid
   blocking the Node.js event loop.
 
 Go also provides bounded `io.Reader` input, `io.Writer` output, and complete
@@ -135,10 +131,10 @@ Primary implementation evidence:
 
 - .NET: [`DocxReader.cs`](src/MiniPdf/DocxReader.cs) and
   [`DocxToPdfConverter.cs`](src/MiniPdf/DocxToPdfConverter.cs)
-- Rust: [`docx.rs`](minipdf-rs/crates/minipdf/src/docx.rs)
-- Java: [`DocxConverter.java`](minipdf-java/minipdf/src/main/java/io/github/minisoftware/minipdf/internal/docx/DocxConverter.java)
-- Go: [`docx.go`](minipdf-go/docx.go)
-- Python: [`docx.py`](minipdf-python/src/minipdf/docx.py)
+- Rust: [`docx.rs`](https://github.com/PdfLibrarys/minipdf-rs/blob/main/crates/minipdf/src/docx.rs)
+- Java: [`DocxConverter.java`](https://github.com/PdfLibrarys/minipdf-java/blob/main/minipdf/src/main/java/io/github/minisoftware/minipdf/internal/docx/DocxConverter.java)
+- Go: [`docx.go`](https://github.com/PdfLibrarys/minipdf-go/blob/main/docx.go)
+- Python: [`docx.py`](https://github.com/PdfLibrarys/minipdf-python/blob/main/src/minipdf/docx.py)
 
 .NET paragraph shading uses the paragraph line box rather than the text
 baseline, extends through spacing between consecutive borderless shaded
@@ -191,12 +187,12 @@ Primary implementation evidence:
 
 - .NET: [`ExcelReader.cs`](src/MiniPdf/ExcelReader.cs) and
   [`ExcelToPdfConverter.cs`](src/MiniPdf/ExcelToPdfConverter.cs)
-- Rust: [`xlsx.rs`](minipdf-rs/crates/minipdf/src/xlsx.rs)
-- Java: [`PoiXlsxRenderer.java`](minipdf-java/minipdf/src/main/java/io/github/minisoftware/minipdf/internal/xlsx/PoiXlsxRenderer.java)
-- Go: [`xlsx.go`](minipdf-go/xlsx.go)
-  and [`xlsx_print.go`](minipdf-go/xlsx_print.go); explicit print areas select
+- Rust: [`xlsx.rs`](https://github.com/PdfLibrarys/minipdf-rs/blob/main/crates/minipdf/src/xlsx.rs)
+- Java: [`PoiXlsxRenderer.java`](https://github.com/PdfLibrarys/minipdf-java/blob/main/minipdf/src/main/java/io/github/minisoftware/minipdf/internal/xlsx/PoiXlsxRenderer.java)
+- Go: [`xlsx.go`](https://github.com/PdfLibrarys/minipdf-go/blob/main/xlsx.go)
+  and [`xlsx_print.go`](https://github.com/PdfLibrarys/minipdf-go/blob/main/xlsx_print.go); explicit print areas select
   grid rendering with repeated titles, hidden cells, scaling, and page breaks.
-- Python: [`xlsx.py`](minipdf-python/src/minipdf/xlsx.py)
+- Python: [`xlsx.py`](https://github.com/PdfLibrarys/minipdf-python/blob/main/src/minipdf/xlsx.py)
 
 .NET resolves unnamed XLSX font families from the workbook's minor theme font,
 falling back to the first style font when no theme font is available. Explicit
@@ -241,10 +237,10 @@ Primary implementation evidence:
 
 - .NET: [`PptxReader.cs`](src/MiniPdf/PptxReader.cs) and
   [`PptxToPdfConverter.cs`](src/MiniPdf/PptxToPdfConverter.cs)
-- Rust: [`pptx.rs`](minipdf-rs/crates/minipdf/src/pptx.rs)
-- Java: [`PptxConverter.java`](minipdf-java/minipdf/src/main/java/io/github/minisoftware/minipdf/internal/pptx/PptxConverter.java)
-- Go: [`pptx.go`](minipdf-go/pptx.go)
-- Python: [`pptx.py`](minipdf-python/src/minipdf/pptx.py)
+- Rust: [`pptx.rs`](https://github.com/PdfLibrarys/minipdf-rs/blob/main/crates/minipdf/src/pptx.rs)
+- Java: [`PptxConverter.java`](https://github.com/PdfLibrarys/minipdf-java/blob/main/minipdf/src/main/java/io/github/minisoftware/minipdf/internal/pptx/PptxConverter.java)
+- Go: [`pptx.go`](https://github.com/PdfLibrarys/minipdf-go/blob/main/pptx.go)
+- Python: [`pptx.py`](https://github.com/PdfLibrarys/minipdf-python/blob/main/src/minipdf/pptx.py)
 
 ## Font, Image, and PDF Writer Gaps
 
@@ -269,14 +265,14 @@ internal in the next breaking release.
 Java, Go, and Python now enforce explicit package-loading limits.
 Java rejects excessive entry counts, oversized or highly compressed entries,
 unsafe paths, duplicate entries, and XML external entities in
-[`OoxmlPackage.java`](minipdf-java/minipdf/src/main/java/io/github/minisoftware/minipdf/internal/OoxmlPackage.java)
+[`OoxmlPackage.java`](https://github.com/PdfLibrarys/minipdf-java/blob/main/minipdf/src/main/java/io/github/minisoftware/minipdf/internal/OoxmlPackage.java)
 and
-[`SecureXml.java`](minipdf-java/minipdf/src/main/java/io/github/minisoftware/minipdf/internal/SecureXml.java).
+[`SecureXml.java`](https://github.com/PdfLibrarys/minipdf-java/blob/main/minipdf/src/main/java/io/github/minisoftware/minipdf/internal/SecureXml.java).
 Python applies package limits and path checks in
-[`office.py`](minipdf-python/src/minipdf/office.py).
+[`office.py`](https://github.com/PdfLibrarys/minipdf-python/blob/main/src/minipdf/office.py).
 Go applies entry count, entry and total size, expansion ratio, encryption,
 duplicate path, and unsafe path checks in
-[`office.go`](minipdf-go/office.go), exposed through `ErrInvalidPackage`.
+[`office.go`](https://github.com/PdfLibrarys/minipdf-go/blob/main/office.go), exposed through `ErrInvalidPackage`.
 
 .NET, Rust, and therefore Node.js still need the same bounded OOXML package
 contract. Cross-language conformance fixtures must cover:
@@ -386,8 +382,8 @@ present. Require a focused unit test plus a reproducible visual benchmark case.
 - [ ] Fix [`README.md`](README.md), which lists Python input as DOCX only even
   though the Python dispatcher supports XLSX and PPTX.
 - [ ] Align the Python package and runtime version declarations in
-  [`pyproject.toml`](minipdf-python/pyproject.toml) and
-  [`__init__.py`](minipdf-python/src/minipdf/__init__.py).
+  [`pyproject.toml`](https://github.com/PdfLibrarys/minipdf-python/blob/main/pyproject.toml) and
+  [`__init__.py`](https://github.com/PdfLibrarys/minipdf-python/blob/main/src/minipdf/__init__.py).
 
 ### P1: Rendering Conformance
 
