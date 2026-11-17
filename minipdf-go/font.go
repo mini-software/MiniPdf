@@ -13,15 +13,16 @@ import (
 )
 
 type embeddedFont struct {
-	name            string
-	data            []byte
-	font            *sfnt.Font
-	runeToGlyph     map[rune]sfnt.GlyphIndex
-	glyphToRune     map[sfnt.GlyphIndex]rune
-	objectID        int
-	resource        string
-	advances        []float64
-	ascent, descent float64
+	name                     string
+	data                     []byte
+	font                     *sfnt.Font
+	runeToGlyph              map[rune]sfnt.GlyphIndex
+	glyphToRune              map[sfnt.GlyphIndex]rune
+	objectID                 int
+	resource                 string
+	advances                 []float64
+	ascent, descent          float64
+	nativeBold, nativeItalic bool
 }
 
 func prepareEmbeddedFont(pages []*PDFPage) *embeddedFont {
