@@ -10,8 +10,6 @@ body:
       description: Which language implementation should this feature target?
       options:
         - .NET (C#)
-        - Rust
-        - Both / shared
     validations:
       required: true
 

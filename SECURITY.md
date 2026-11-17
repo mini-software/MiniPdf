@@ -6,9 +6,10 @@ yet covered by an automated test.
 
 ## Supported Versions
 
-Security fixes are provided for the latest published .NET release and the
-latest published Rust release. Older versions may receive a fix when the impact
-and backport risk justify it, but this is not guaranteed.
+This repository provides security fixes for the latest published .NET release.
+Report issues affecting other languages in their independent repositories.
+Older versions may receive a fix when the impact and backport risk justify it,
+but this is not guaranteed.
 
 ## Reporting a Vulnerability
 
