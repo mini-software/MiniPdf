@@ -19,7 +19,7 @@ La tua stella o donazione può rendere MiniPdf migliore.
 
 </div>
 
-MiniPdf provides a .NET library, command-line tool, and standalone Native AOT binaries for XLSX, DOCX, and PPTX conversion.
+
 
 MiniPdf converte direttamente i documenti Office in PDF senza richiedere Microsoft Office, LibreOffice, Adobe Acrobat o automazione COM durante l'esecuzione.
 
@@ -72,7 +72,7 @@ using var output = File.Create("stream-output.pdf");
 MiniPdf.ConvertToPdf(input, output);
 ```
 
-The caller owns the streams and disposes them. Use the overload returning
+Dispose the input and output streams in the calling code. Use the overload returning
 `byte[]` when an in-memory result is needed.
 
 ### Select Excel sheets and control layout
@@ -123,9 +123,9 @@ MiniPdf.ConvertToPdf(input, output, new MiniPdfConversionOptions
 });
 ```
 
-This opt-in XLSX mode uses temporary disk storage. Unsupported features, such
-as formulas, merged cells, and drawings, produce an explicit error rather than
-silently falling back. Read the [supported features and limitations](README.nuget.md#low-memory-xlsx-conversion-opt-in)
+Low-memory XLSX conversion requires writable temporary storage. Features such
+as formulas, merged cells, and drawings are unsupported and return an error; there is no
+automatic fallback. Read the [supported features and limitations](README.nuget.md#low-memory-xlsx-conversion-opt-in)
 before enabling it. Returning `byte[]` still retains the complete PDF in memory.
 
 ### Provide fonts for headless hosts
@@ -155,13 +155,10 @@ MiniPdf punta alla conversione pratica dei documenti, non alla compatibilità co
 
 <a id="quick-contribution"></a>
 
-## Contribuisci subito
+## Contributing
 
-Apri un fork o clone pulito in qualsiasi agente di programmazione, quindi incolla questa istruzione nella chat dell'Agent:
-
-```text
-Run the minipdf-contribution skill.
-```
+See the [contribution guide](../CONTRIBUTING.md) for setup, tests, and reviews.
+For bug reports, include a small input file and the steps needed to reproduce the problem.
 
 ## Risorse del progetto
 

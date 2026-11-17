@@ -19,7 +19,7 @@
 
 </div>
 
-MiniPdf provides a .NET library, command-line tool, and standalone Native AOT binaries for XLSX, DOCX, and PPTX conversion.
+
 
 MiniPdf는 런타임에 Microsoft Office, LibreOffice, Adobe Acrobat 또는 COM 자동화 없이 Office 문서를 PDF로 직접 변환합니다.
 
@@ -72,7 +72,7 @@ using var output = File.Create("stream-output.pdf");
 MiniPdf.ConvertToPdf(input, output);
 ```
 
-The caller owns the streams and disposes them. Use the overload returning
+Dispose the input and output streams in the calling code. Use the overload returning
 `byte[]` when an in-memory result is needed.
 
 ### Select Excel sheets and control layout
@@ -123,9 +123,9 @@ MiniPdf.ConvertToPdf(input, output, new MiniPdfConversionOptions
 });
 ```
 
-This opt-in XLSX mode uses temporary disk storage. Unsupported features, such
-as formulas, merged cells, and drawings, produce an explicit error rather than
-silently falling back. Read the [supported features and limitations](README.nuget.md#low-memory-xlsx-conversion-opt-in)
+Low-memory XLSX conversion requires writable temporary storage. Features such
+as formulas, merged cells, and drawings are unsupported and return an error; there is no
+automatic fallback. Read the [supported features and limitations](README.nuget.md#low-memory-xlsx-conversion-opt-in)
 before enabling it. Returning `byte[]` still retains the complete PDF in memory.
 
 ### Provide fonts for headless hosts
@@ -155,13 +155,10 @@ MiniPdf는 실용적인 문서 변환을 목표로 하며 Microsoft Office 레�
 
 <a id="quick-contribution"></a>
 
-## 빠르게 기여하기
+## Contributing
 
-원하는 코딩 Agent에서 깨끗한 fork 또는 clone을 연 다음 아래 지시문을 Agent 채팅에 붙여 넣으세요.
-
-```text
-Run the minipdf-contribution skill.
-```
+See the [contribution guide](../CONTRIBUTING.md) for setup, tests, and reviews.
+For bug reports, include a small input file and the steps needed to reproduce the problem.
 
 ## 프로젝트 리소스
 

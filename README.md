@@ -1,6 +1,6 @@
 <div align="center">
 
-**Lightweight, fast and native Office-to-PDF library and command-line tools for .NET.**
+**Office-to-PDF conversion for .NET.**
 
 <p>
 <a href="https://www.nuget.org/packages/MiniPdf"><img src="https://img.shields.io/nuget/v/MiniPdf.svg" alt="NuGet"></a>
@@ -13,17 +13,13 @@ English | <a href="documents/README.zh-CN.md">简体中文</a> | <a href="docume
 
 **[Online Demo](https://mini-software.github.io/MiniPdf/)** · **[Releases](https://github.com/mini-software/MiniPdf/releases)** · **[Report an issue](https://github.com/mini-software/MiniPdf/issues)**
 
-Your star or donation can make MiniPdf better
-
-🤝 **Looking for co-developers:** [Quick contribution](#quick-contribution)
+Contributions are welcome. See [Contributing](#quick-contribution).
 
 </div>
 
-MiniPdf provides a **.NET library, command-line tool, and standalone Native AOT binaries**
-for converting XLSX, DOCX, and PPTX files to PDF.
-
-MiniPdf converts Office documents directly to PDF without Microsoft Office,
-LibreOffice, Adobe Acrobat, or COM automation at runtime. 
+Convert XLSX, DOCX, and PPTX files with the .NET library, command-line tool,
+or standalone Native AOT builds. Microsoft Office, LibreOffice, Adobe Acrobat,
+and COM automation are not required at runtime.
 
 ## .NET overview
 
@@ -59,7 +55,7 @@ minipdf slides.pptx -o slides.pdf
 minipdf --help
 ```
 
-No .NET runtime installed on the destination machine? Download a standalone
+Standalone builds run without an installed .NET runtime. Download a
 Native AOT binary from [Releases](https://github.com/mini-software/MiniPdf/releases).
 
 ## Usage examples
@@ -75,7 +71,7 @@ using var output = File.Create("stream-output.pdf");
 MiniPdf.ConvertToPdf(input, output);
 ```
 
-The caller owns the streams and disposes them. Use the overload returning
+Dispose the input and output streams in the calling code. Use the overload returning
 `byte[]` when an in-memory result is needed.
 
 ### Select Excel sheets and control layout
@@ -126,9 +122,9 @@ MiniPdf.ConvertToPdf(input, output, new MiniPdfConversionOptions
 });
 ```
 
-This opt-in XLSX mode uses temporary disk storage. Unsupported features, such
-as formulas, merged cells, and drawings, produce an explicit error rather than
-silently falling back. Read the [supported features and limitations](documents/README.nuget.md#low-memory-xlsx-conversion-opt-in)
+Low-memory XLSX conversion requires writable temporary storage. Features such
+as formulas, merged cells, and drawings are unsupported and return an error; there is no
+automatic fallback. Read the [supported features and limitations](documents/README.nuget.md#low-memory-xlsx-conversion-opt-in)
 before enabling it. Returning `byte[]` still retains the complete PDF in memory.
 
 ### Provide fonts for headless hosts
@@ -161,14 +157,10 @@ demo or benchmark reports to evaluate representative files.
 
 <a id="quick-contribution"></a>
 
-## Quick contribution
+## Contributing
 
-Open a clean fork or clone in any coding agent, then paste this prompt into the
-agent chat:
-
-```text
-Run the minipdf-contribution skill.
-```
+See the [contribution guide](CONTRIBUTING.md) for setup, tests, and reviews.
+For bug reports, include a small input file and the steps needed to reproduce the problem.
 
 ## Project resources
 

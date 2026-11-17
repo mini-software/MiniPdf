@@ -19,7 +19,7 @@
 
 </div>
 
-MiniPdf provides a .NET library, command-line tool, and standalone Native AOT binaries for XLSX, DOCX, and PPTX conversion.
+
 
 MiniPdf は、実行時に Microsoft Office、LibreOffice、Adobe Acrobat、COM オートメーションを必要とせず、Office 文書を直接 PDF に変換します。
 
@@ -72,7 +72,7 @@ using var output = File.Create("stream-output.pdf");
 MiniPdf.ConvertToPdf(input, output);
 ```
 
-The caller owns the streams and disposes them. Use the overload returning
+Dispose the input and output streams in the calling code. Use the overload returning
 `byte[]` when an in-memory result is needed.
 
 ### Select Excel sheets and control layout
@@ -123,9 +123,9 @@ MiniPdf.ConvertToPdf(input, output, new MiniPdfConversionOptions
 });
 ```
 
-This opt-in XLSX mode uses temporary disk storage. Unsupported features, such
-as formulas, merged cells, and drawings, produce an explicit error rather than
-silently falling back. Read the [supported features and limitations](README.nuget.md#low-memory-xlsx-conversion-opt-in)
+Low-memory XLSX conversion requires writable temporary storage. Features such
+as formulas, merged cells, and drawings are unsupported and return an error; there is no
+automatic fallback. Read the [supported features and limitations](README.nuget.md#low-memory-xlsx-conversion-opt-in)
 before enabling it. Returning `byte[]` still retains the complete PDF in memory.
 
 ### Provide fonts for headless hosts
@@ -155,13 +155,10 @@ MiniPdf は実用的な文書変換を目的としており、Microsoft Office �
 
 <a id="quick-contribution"></a>
 
-## すぐに貢献する
+## Contributing
 
-任意のコーディング Agent でクリーンな fork または clone を開き、次の指示を Agent のチャットに貼り付けます。
-
-```text
-Run the minipdf-contribution skill.
-```
+See the [contribution guide](../CONTRIBUTING.md) for setup, tests, and reviews.
+For bug reports, include a small input file and the steps needed to reproduce the problem.
 
 ## プロジェクトリソース
 
