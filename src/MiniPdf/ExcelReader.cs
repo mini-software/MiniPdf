@@ -171,7 +171,7 @@ internal static class ExcelReader
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
-        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+        var ns = doc.Root?.Name.Namespace ?? XNamespace.None;
 
         foreach (var si in doc.Descendants(ns + "si"))
         {
@@ -204,7 +204,7 @@ internal static class ExcelReader
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
-        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+        var ns = doc.Root?.Name.Namespace ?? XNamespace.None;
         var r = XNamespace.Get("http://schemas.openxmlformats.org/officeDocument/2006/relationships");
 
         var sheetId = 1;
@@ -341,7 +341,7 @@ internal static class ExcelReader
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
-        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+        var ns = doc.Root?.Name.Namespace ?? XNamespace.None;
 
         // Read <fonts> -> <font> elements
         var fontsElement = doc.Descendants(ns + "fonts").FirstOrDefault();
@@ -393,7 +393,7 @@ internal static class ExcelReader
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
-        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+        var ns = doc.Root?.Name.Namespace ?? XNamespace.None;
 
         var bordersEl = doc.Descendants(ns + "borders").FirstOrDefault();
         if (bordersEl == null) return borders;
@@ -438,7 +438,7 @@ internal static class ExcelReader
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
-        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+        var ns = doc.Root?.Name.Namespace ?? XNamespace.None;
 
         // Read all DXF border entries
         var dxfBorders = new List<CellBorderInfo?>();
@@ -594,7 +594,7 @@ internal static class ExcelReader
         using (var stylesStream = stylesEntry.Open())
         {
             var stylesDoc = XDocument.Load(stylesStream);
-            var ns = stylesDoc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+            var ns = stylesDoc.Root?.Name.Namespace ?? XNamespace.None;
 
             // Parse table styles: map style name → (headerRow dxfId, totalRow dxfId, wholeTable dxfId, firstColumn dxfId, firstRowStripe dxfId, secondRowStripe dxfId)
             tableStyleMap = new Dictionary<string, (int, int, int, int, int, int)>(StringComparer.OrdinalIgnoreCase);
@@ -640,7 +640,7 @@ internal static class ExcelReader
             {
                 var tableDoc = XDocument.Load(tableStream);
                 var root = tableDoc.Root;
-                var ns = root?.GetDefaultNamespace() ?? XNamespace.None;
+                var ns = root?.Name.Namespace ?? XNamespace.None;
                 refAttr = root?.Attribute("ref")?.Value;
 
                 if (int.TryParse(root?.Attribute("headerRowCount")?.Value, out var hrc))
@@ -830,7 +830,7 @@ internal static class ExcelReader
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
-        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+        var ns = doc.Root?.Name.Namespace ?? XNamespace.None;
 
         // Read <cellXfs> -> <xf> elements
         var cellXfs = doc.Descendants(ns + "cellXfs").FirstOrDefault();
@@ -882,7 +882,7 @@ internal static class ExcelReader
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
-        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+        var ns = doc.Root?.Name.Namespace ?? XNamespace.None;
 
         var fillsEl = doc.Descendants(ns + "fills").FirstOrDefault();
         if (fillsEl == null) return fills;
@@ -1069,7 +1069,7 @@ internal static class ExcelReader
         {
             using var ss = stylesEntry.Open();
             var sdoc = XDocument.Load(ss);
-            var sNs = sdoc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+            var sNs = sdoc.Root?.Name.Namespace ?? XNamespace.None;
             var firstFont = sdoc.Descendants(sNs + "font").FirstOrDefault();
             var name = firstFont?.Element(sNs + "name")?.Attribute("val")?.Value;
             if (!string.IsNullOrWhiteSpace(name))
@@ -1091,7 +1091,7 @@ internal static class ExcelReader
 
         using var ss = stylesEntry.Open();
         var sdoc = XDocument.Load(ss);
-        var ns = sdoc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+        var ns = sdoc.Root?.Name.Namespace ?? XNamespace.None;
 
         // cellStyleXfs[0] is the Normal style
         var cellStyleXfs = sdoc.Descendants(ns + "cellStyleXfs").FirstOrDefault();
@@ -1164,7 +1164,7 @@ internal static class ExcelReader
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
-        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+        var ns = doc.Root?.Name.Namespace ?? XNamespace.None;
 
         var numFmts = doc.Descendants(ns + "numFmts").FirstOrDefault();
         if (numFmts == null) return formats;
@@ -1192,7 +1192,7 @@ internal static class ExcelReader
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
-        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+        var ns = doc.Root?.Name.Namespace ?? XNamespace.None;
 
         var dxfs = doc.Descendants(ns + "dxfs").FirstOrDefault();
         if (dxfs == null) return result;
@@ -1318,7 +1318,7 @@ internal static class ExcelReader
         var rules = new List<(string, string, string, string, int)>();
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
-        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+        var ns = doc.Root?.Name.Namespace ?? XNamespace.None;
 
         foreach (var cf in doc.Descendants(ns + "conditionalFormatting"))
         {
@@ -1349,7 +1349,7 @@ internal static class ExcelReader
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
-        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+        var ns = doc.Root?.Name.Namespace ?? XNamespace.None;
 
         foreach (var dn in doc.Descendants(ns + "definedName"))
         {
@@ -1825,7 +1825,7 @@ internal static class ExcelReader
             var storedRows = lowMemory.CreateRows();
             using var metadataStream = entry.Open();
             var metadata = XDocument.Load(metadataStream);
-            var sheetNamespace = metadata.Root?.GetDefaultNamespace() ?? XNamespace.None;
+            var sheetNamespace = metadata.Root?.Name.Namespace ?? XNamespace.None;
             var columns = metadata.Descendants(sheetNamespace + "cols").FirstOrDefault();
             foreach (var xml in lowMemory.GetRows(entry.FullName))
             {
@@ -1849,7 +1849,7 @@ internal static class ExcelReader
             using var stream = entry.Open();
             doc = XDocument.Load(stream);
         }
-        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+        var ns = doc.Root?.Name.Namespace ?? XNamespace.None;
 
         // Hyperlink cells often rely on workbook defaults for visual style.
         // Track refs so we can apply the expected blue + underline appearance.
@@ -2125,7 +2125,7 @@ internal static class ExcelReader
         XDocument worksheet;
         using (var stream = worksheetEntry.Open())
             worksheet = XDocument.Load(stream);
-        var ns = worksheet.Root?.GetDefaultNamespace() ?? XNamespace.None;
+        var ns = worksheet.Root?.Name.Namespace ?? XNamespace.None;
         XNamespace relationshipsNamespace = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
 
         var relationshipTargets = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -3090,7 +3090,7 @@ internal static class ExcelReader
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
-        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+        var ns = doc.Root?.Name.Namespace ?? XNamespace.None;
 
         // Only read defaultColWidth when the attribute is EXPLICITLY written by the author
         var fmtPr = doc.Descendants(ns + "sheetFormatPr").FirstOrDefault();
@@ -3154,7 +3154,7 @@ internal static class ExcelReader
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
-        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+        var ns = doc.Root?.Name.Namespace ?? XNamespace.None;
 
         var pageSetup = doc.Descendants(ns + "pageSetup").FirstOrDefault();
         if (pageSetup != null)
@@ -3272,7 +3272,7 @@ internal static class ExcelReader
 
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
-        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+        var ns = doc.Root?.Name.Namespace ?? XNamespace.None;
 
         // Read default row height from sheetFormatPr
         var fmtPr = doc.Descendants(ns + "sheetFormatPr").FirstOrDefault();
@@ -3331,7 +3331,7 @@ internal static class ExcelReader
         var breaks = new HashSet<int>();
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
-        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+        var ns = doc.Root?.Name.Namespace ?? XNamespace.None;
 
         foreach (var brk in doc.Descendants(ns + "rowBreaks").SelectMany(rb => rb.Elements(ns + "brk")))
         {
@@ -3354,7 +3354,7 @@ internal static class ExcelReader
         var result = new List<(int, int, int, int)>();
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
-        var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+        var ns = doc.Root?.Name.Namespace ?? XNamespace.None;
 
         foreach (var mc in doc.Descendants(ns + "mergeCell"))
         {
