@@ -828,6 +828,23 @@ public class DocxToPdfConverterTests
       }
 
       [Fact]
+      public void Convert_FooterPageFieldsInTable_RendersPageNumbers()
+      {
+        using var docxStream = CreateDocxWithFooterPageFieldsInTable();
+
+        var doc = DocxToPdfConverter.Convert(docxStream);
+
+        Assert.Equal(2, doc.Pages.Count);
+        for (var i = 0; i < doc.Pages.Count; i++)
+        {
+          var text = string.Concat(doc.Pages[i].TextBlocks.Select(b => b.Text));
+          Assert.DoesNotContain("{PAGE}", text, StringComparison.Ordinal);
+          Assert.DoesNotContain("{NUMPAGES}", text, StringComparison.Ordinal);
+          Assert.Contains($"Page {i + 1} of 2", text, StringComparison.Ordinal);
+        }
+      }
+
+      [Fact]
       public void Convert_EmptyTocField_GeneratesHeadingEntries()
       {
         using var docxStream = CreateDocxWithEmptyTocField();
@@ -2028,6 +2045,97 @@ public class DocxToPdfConverterTests
                     <w:r><w:t>9</w:t></w:r>
                     <w:r><w:fldChar w:fldCharType="end"/></w:r>
                   </w:p>
+                </w:ftr>
+                """);
+        }
+
+        ms.Position = 0;
+        return ms;
+    }
+
+    private static MemoryStream CreateDocxWithFooterPageFieldsInTable()
+    {
+        var ms = new MemoryStream();
+
+        using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
+        {
+            AddEntry(archive, "[Content_Types].xml",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+                  <Default Extension="xml" ContentType="application/xml"/>
+                  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+                  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+                  <Override PartName="/word/footer1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml"/>
+                </Types>
+                """);
+
+            AddEntry(archive, "_rels/.rels",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+                </Relationships>
+                """);
+
+            AddEntry(archive, "word/_rels/document.xml.rels",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                  <Relationship Id="rId10" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer" Target="footer1.xml"/>
+                </Relationships>
+                """);
+
+            AddEntry(archive, "word/document.xml",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+                  <w:body>
+                    <w:p><w:r><w:t>First page</w:t></w:r></w:p>
+                    <w:p><w:r><w:br w:type="page"/></w:r></w:p>
+                    <w:p><w:r><w:t>Second page</w:t></w:r></w:p>
+                    <w:sectPr>
+                      <w:footerReference w:type="default" r:id="rId10"/>
+                    </w:sectPr>
+                  </w:body>
+                </w:document>
+                """);
+
+            AddEntry(archive, "word/footer1.xml",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <w:ftr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                  <w:tbl>
+                    <w:tblPr><w:tblW w:w="6000" w:type="dxa"/></w:tblPr>
+                    <w:tblGrid>
+                      <w:gridCol w:w="3000"/>
+                      <w:gridCol w:w="3000"/>
+                    </w:tblGrid>
+                    <w:tr>
+                      <w:tc>
+                        <w:tcPr><w:tcW w:w="3000" w:type="dxa"/></w:tcPr>
+                        <w:p><w:r><w:t>Document no: 1</w:t></w:r></w:p>
+                      </w:tc>
+                      <w:tc>
+                        <w:tcPr><w:tcW w:w="3000" w:type="dxa"/></w:tcPr>
+                        <w:p>
+                          <w:r><w:t xml:space="preserve">Page </w:t></w:r>
+                          <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+                          <w:r><w:instrText> PAGE </w:instrText></w:r>
+                          <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+                          <w:r><w:t>1</w:t></w:r>
+                          <w:r><w:fldChar w:fldCharType="end"/></w:r>
+                          <w:r><w:t xml:space="preserve"> of </w:t></w:r>
+                          <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+                          <w:r><w:instrText> NUMPAGES </w:instrText></w:r>
+                          <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+                          <w:r><w:t>1</w:t></w:r>
+                          <w:r><w:fldChar w:fldCharType="end"/></w:r>
+                        </w:p>
+                      </w:tc>
+                    </w:tr>
+                  </w:tbl>
+                  <w:p/>
                 </w:ftr>
                 """);
         }
