@@ -157,7 +157,7 @@ MiniPdf는 실용적인 문서 변환을 목표로 하며 Microsoft Office 레�
 
 ## Contributing
 
-See the [contribution guide](../CONTRIBUTING.md) for setup, tests, and reviews.
+Submit changes through [pull requests](https://github.com/mini-software/MiniPdf/pulls).
 For bug reports, include a small input file and the steps needed to reproduce the problem.
 
 ## 프로젝트 리소스
@@ -168,10 +168,6 @@ For bug reports, include a small input file and the steps needed to reproduce th
 | [.NET 문서](README.nuget.md) | 안정 버전 라이브러리 및 CLI 사용법 |
 | [.NET XLSX 벤치마크](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=xlsx) | 스프레드시트 시각 비교 결과 |
 | [.NET DOCX 벤치마크](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=docx) | 문서 시각 비교 결과 |
-| [커뮤니티 거버넌스](../GOVERNANCE.md) | 의사 결정, 역할, 투표 및 메인테이너 선정 |
-| [로드맵](../ROADMAP.md) | 프로젝트 범위, 구현 상태 및 현재 우선순위 |
-| [보안](../SECURITY.md) | 비공개 취약점 신고 및 지원 버전 |
-| [기여 가이드](../CONTRIBUTING.md) | 개발 환경, 테스트, 리뷰 및 출처 요건 |
 | [GitHub Releases](https://github.com/mini-software/MiniPdf/releases) | 패키지 및 독립 실행형 바이너리 |
 | [Issues](https://github.com/mini-software/MiniPdf/issues) | 버그, 호환성 보고 및 기능 요청 |
 

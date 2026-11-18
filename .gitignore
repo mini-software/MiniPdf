@@ -18,6 +18,29 @@
 *.user
 *.suo
 
+## Local assistant configuration
+**/AGENTS.md
+**/CLAUDE.md
+**/GEMINI.md
+**/.claude/
+**/.copilot/
+**/.codex/
+**/.cursor/
+**/.windsurf/
+/.github/copilot*.md
+/.github/agents/
+/.github/prompts/
+/.github/skills/
+
+## Local project notes
+/CODE_OF_CONDUCT.md
+/CONTRIBUTING.md
+/FEATURE_PARITY.md
+/GOVERNANCE.md
+/MAINTAINERS.md
+/ROADMAP.md
+/SECURITY.md
+
 ## OS
 Thumbs.db
 Desktop.ini

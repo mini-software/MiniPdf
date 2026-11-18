@@ -328,20 +328,6 @@ test('advisory workflow has only base-controlled triggers and no PR notifier', (
   assert.match(workflow, /pull-requests: read/);
   assert.doesNotMatch(workflow, /actions\/checkout|\$\{\{[^}]*head\.(?:sha|ref)|download-artifact|secrets\.|pull_request_review:|workflow_run:|statuses: write|createCommitStatus/);
   assert.equal(existsSync(resolve(__dirname, '..', 'workflows', 'review-changed.yml')), false);
-  const contributing = readFileSync(resolve(__dirname, '..', '..', 'CONTRIBUTING.md'), 'utf8');
-  assert.match(contributing, /approval counts are \*\*reminders only\*\*, not merge requirements/);
-  assert.match(contributing, /approval minimum for `main` is \*\*zero\*\*/);
-  assert.match(contributing, /native `minimum_approvals` set to \*\*zero\*\*/);
-  assert.match(contributing, /Without `major-change`: \*\*one approval recommended\*\*/);
-  assert.match(contributing, /With `major-change`: \*\*three approvals recommended\*\*/);
-  for (const pattern of [
-    '.github/**', 'AGENTS.md', 'CONTRIBUTING.md', 'GOVERNANCE.md',
-    'SECURITY.md', 'LICENSE', 'MAINTAINERS.md', 'CODE_OF_CONDUCT.md'
-  ]) {
-    assert.ok(contributing.split(/\r?\n/).includes(pattern), `Document important path: ${pattern}`);
-  }
-  assert.match(contributing, /The label changes only the recommendation, not merge eligibility/);
-  assert.match(contributing, /empty\s+bypass list/);
   assert.match(workflow, /No approving reviews are required to merge/);
   assert.match(workflow, /conclusion: waiting.length > 0 \? 'neutral' : 'success'/);
   assert.doesNotMatch(workflow, /action_required|native three-approval protection|Native rules require one approval/);

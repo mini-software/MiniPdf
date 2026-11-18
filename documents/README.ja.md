@@ -157,7 +157,7 @@ MiniPdf は実用的な文書変換を目的としており、Microsoft Office �
 
 ## Contributing
 
-See the [contribution guide](../CONTRIBUTING.md) for setup, tests, and reviews.
+Submit changes through [pull requests](https://github.com/mini-software/MiniPdf/pulls).
 For bug reports, include a small input file and the steps needed to reproduce the problem.
 
 ## プロジェクトリソース
@@ -168,10 +168,6 @@ For bug reports, include a small input file and the steps needed to reproduce th
 | [.NET ドキュメント](README.nuget.md) | 安定版ライブラリと CLI の使用方法 |
 | [.NET XLSX ベンチマーク](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=xlsx) | スプレッドシートの視覚比較結果 |
 | [.NET DOCX ベンチマーク](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=docx) | 文書の視覚比較結果 |
-| [コミュニティガバナンス](../GOVERNANCE.md) | 意思決定、役割、投票、メンテナー選出 |
-| [ロードマップ](../ROADMAP.md) | プロジェクト範囲、実装状況、現在の優先事項 |
-| [セキュリティ](../SECURITY.md) | 脆弱性の非公開報告とサポート対象バージョン |
-| [コントリビューション](../CONTRIBUTING.md) | 開発環境、テスト、レビュー、来歴要件 |
 | [GitHub Releases](https://github.com/mini-software/MiniPdf/releases) | パッケージと単体バイナリ |
 | [Issues](https://github.com/mini-software/MiniPdf/issues) | バグ、互換性レポート、機能リクエスト |
 
