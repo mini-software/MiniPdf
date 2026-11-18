@@ -157,7 +157,7 @@ MiniPdf vise une conversion pratique des documents, et non une compatibilité to
 
 ## Contributing
 
-See the [contribution guide](../CONTRIBUTING.md) for setup, tests, and reviews.
+Submit changes through [pull requests](https://github.com/mini-software/MiniPdf/pulls).
 For bug reports, include a small input file and the steps needed to reproduce the problem.
 
 ## Ressources du projet
@@ -168,10 +168,6 @@ For bug reports, include a small input file and the steps needed to reproduce th
 | [Documentation .NET](README.nuget.md) | Utilisation de la bibliothèque stable et de la CLI |
 | [Benchmark XLSX .NET](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=xlsx) | Résultats visuels pour les feuilles de calcul |
 | [Benchmark DOCX .NET](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=docx) | Résultats visuels pour les documents |
-| [Gouvernance communautaire](../GOVERNANCE.md) | Décisions, rôles, votes et sélection des mainteneurs |
-| [Feuille de route](../ROADMAP.md) | Périmètre du projet, état des implémentations et priorités |
-| [Sécurité](../SECURITY.md) | Signalement privé des vulnérabilités et versions prises en charge |
-| [Contribuer](../CONTRIBUTING.md) | Environnement, tests, revues et exigences de provenance |
 | [GitHub Releases](https://github.com/mini-software/MiniPdf/releases) | Paquets et binaires autonomes |
 | [Issues](https://github.com/mini-software/MiniPdf/issues) | Bogues, rapports de compatibilité et demandes de fonctionnalités |
 

@@ -157,7 +157,7 @@ MiniPdf 专注于实用文档转换，不追求完全复制 Microsoft Office 版
 
 ## Contributing
 
-See the [contribution guide](../CONTRIBUTING.md) for setup, tests, and reviews.
+Submit changes through [pull requests](https://github.com/mini-software/MiniPdf/pulls).
 For bug reports, include a small input file and the steps needed to reproduce the problem.
 
 ## 项目资源
@@ -168,10 +168,6 @@ For bug reports, include a small input file and the steps needed to reproduce th
 | [.NET 文档](README.nuget.md) | 稳定版库与 CLI 用法 |
 | [.NET XLSX 基准](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=xlsx) | 电子表格视觉比较结果 |
 | [.NET DOCX 基准](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=docx) | 文档视觉比较结果 |
-| [社区治理](../GOVERNANCE.md) | 决策、角色、投票和维护者选任 |
-| [路线图](../ROADMAP.md) | 项目范围、实现状态和当前优先事项 |
-| [安全政策](../SECURITY.md) | 私密漏洞报告和支持版本 |
-| [贡献指南](../CONTRIBUTING.md) | 开发环境、测试、审查和来源要求 |
 | [GitHub Releases](https://github.com/mini-software/MiniPdf/releases) | 软件包与独立二进制文件 |
 | [Issues](https://github.com/mini-software/MiniPdf/issues) | 缺陷、兼容性报告和功能建议 |
 

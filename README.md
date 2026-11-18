@@ -159,7 +159,7 @@ demo or benchmark reports to evaluate representative files.
 
 ## Contributing
 
-See the [contribution guide](CONTRIBUTING.md) for setup, tests, and reviews.
+Submit changes through [pull requests](https://github.com/mini-software/MiniPdf/pulls).
 For bug reports, include a small input file and the steps needed to reproduce the problem.
 
 ## Project resources
@@ -171,10 +171,6 @@ For bug reports, include a small input file and the steps needed to reproduce th
 | [CLI reference](documents/README.nuget.cli.md) | Commands, fonts, compression, and Excel preview options |
 | [.NET XLSX benchmark](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=xlsx) | Visual comparison results for spreadsheets |
 | [.NET DOCX benchmark](https://mini-software.github.io/minipdf-web-page/?language=dotnet&suite=classic&format=docx) | Visual comparison results for documents |
-| [Community governance](GOVERNANCE.md) | Decisions, roles, voting, and maintainer selection |
-| [Roadmap](ROADMAP.md) | Project scope, implementation status, and current priorities |
-| [Security](SECURITY.md) | Private vulnerability reporting and supported versions |
-| [Contributing](CONTRIBUTING.md) | Development setup, tests, reviews, and provenance requirements |
 | [GitHub releases](https://github.com/mini-software/MiniPdf/releases) | Packages and standalone binaries |
 | [Issues](https://github.com/mini-software/MiniPdf/issues) | Bugs, compatibility reports, and feature requests |
 
