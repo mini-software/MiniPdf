@@ -2573,29 +2573,18 @@ internal static class DocxReader
             var scale = Math.Min(1d, Math.Min(4096d / requestedWidth, 4096d / requestedHeight));
             var targetWidth = Math.Max(32, (int)Math.Round(requestedWidth * scale));
             var targetHeight = Math.Max(32, (int)Math.Round(requestedHeight * scale));
-            var normalizedBytes = EmfCompatibilityNormalizer.NormalizeForMiniPdfDrawing(sourceBytes, targetWidth, targetHeight);
-            using var sourceStream = new MemoryStream(normalizedBytes, writable: false);
-            using var metafile = new global::MiniSoftware.Drawing.Imaging.Metafile(sourceStream);
-            using var bitmap = metafile.ToBitmap();
-            using var outputStream = new MemoryStream();
-            if (hasCrop)
-            {
-                var cropX = Compat.Clamp((int)Math.Round(bitmap.Width * cropL), 0, bitmap.Width - 1);
-                var cropY = Compat.Clamp((int)Math.Round(bitmap.Height * cropT), 0, bitmap.Height - 1);
-                var cropWidth = Compat.Clamp((int)Math.Round(bitmap.Width * (1 - cropL - cropR)), 1, bitmap.Width - cropX);
-                var cropHeight = Compat.Clamp((int)Math.Round(bitmap.Height * (1 - cropT - cropB)), 1, bitmap.Height - cropY);
-                using var cropped = bitmap.Clone(
-                    new global::MiniSoftware.Drawing.Geometry.Rectangle(cropX, cropY, cropWidth, cropHeight), bitmap.PixelFormat);
-                cropped.Save(outputStream, global::MiniSoftware.Drawing.Imaging.ImageFormat.Png);
-            }
-            else
-            {
-                bitmap.Save(outputStream, global::MiniSoftware.Drawing.Imaging.ImageFormat.Png);
-            }
-            return outputStream.ToArray();
+            var renderBytes = WmfVectorAdapter.IsWmf(sourceBytes) ? WmfVectorAdapter.Convert(sourceBytes, targetWidth, targetHeight) : sourceBytes;
+            return EmfVectorRenderer.RenderCropped(renderBytes, targetWidth, targetHeight, PdfWriter.ResolveMetafileFont,
+                hasCrop ? cropL : 0, hasCrop ? cropT : 0, hasCrop ? cropR : 0, hasCrop ? cropB : 0);
         }
-        catch
+        catch (NotSupportedException error)
         {
+            System.Diagnostics.Trace.TraceWarning("Independent metafile conversion is unsupported: {0}", error.Message);
+            return null;
+        }
+        catch (InvalidDataException error)
+        {
+            System.Diagnostics.Trace.TraceWarning("Independent metafile conversion rejected invalid data: {0}", error.Message);
             return null;
         }
     }
