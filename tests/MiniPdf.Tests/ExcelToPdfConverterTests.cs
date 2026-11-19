@@ -1478,6 +1478,77 @@ public class ExcelToPdfConverterTests
         return ms;
     }
 
+    [Fact]
+    public void Convert_PrefixedSpreadsheetNamespace_ReadsWorkbookSheetsAndStrings()
+    {
+        // Some writers (for example ClosedXML) declare the SpreadsheetML namespace with a
+        // prefix (xmlns:x="...") instead of as the default namespace.
+        const string main = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
+        const string rel = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
+        var ms = new MemoryStream();
+        using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
+        {
+            AddEntry(archive, "[Content_Types].xml", """
+                <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+                  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+                  <Default Extension="xml" ContentType="application/xml"/>
+                  <Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
+                  <Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
+                  <Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/>
+                  <Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>
+                </Types>
+                """);
+            AddEntry(archive, "_rels/.rels", """
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>
+                </Relationships>
+                """);
+            AddEntry(archive, "xl/_rels/workbook.xml.rels", """
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>
+                  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/>
+                  <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
+                </Relationships>
+                """);
+            AddEntry(archive, "xl/workbook.xml", $$"""
+                <x:workbook xmlns:x="{{main}}" xmlns:r="{{rel}}">
+                  <x:sheets><x:sheet name="Prefixed" sheetId="1" r:id="rId1"/></x:sheets>
+                </x:workbook>
+                """);
+            AddEntry(archive, "xl/styles.xml", $$"""
+                <x:styleSheet xmlns:x="{{main}}">
+                  <x:fonts count="1"><x:font><x:sz val="11"/><x:name val="Calibri"/></x:font></x:fonts>
+                  <x:fills count="1"><x:fill><x:patternFill patternType="none"/></x:fill></x:fills>
+                  <x:borders count="1"><x:border><x:left/><x:right/><x:top/><x:bottom/><x:diagonal/></x:border></x:borders>
+                  <x:cellXfs count="1"><x:xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></x:cellXfs>
+                </x:styleSheet>
+                """);
+            AddEntry(archive, "xl/sharedStrings.xml", $$"""
+                <x:sst xmlns:x="{{main}}" count="1" uniqueCount="1">
+                  <x:si><x:t>SharedPrefixedText</x:t></x:si>
+                </x:sst>
+                """);
+            AddEntry(archive, "xl/worksheets/sheet1.xml", $$"""
+                <x:worksheet xmlns:x="{{main}}">
+                  <x:sheetData>
+                    <x:row r="1">
+                      <x:c r="A1" t="s"><x:v>0</x:v></x:c>
+                      <x:c r="B1" t="inlineStr"><x:is><x:t>InlinePrefixedText</x:t></x:is></x:c>
+                      <x:c r="C1"><x:v>42</x:v></x:c>
+                    </x:row>
+                  </x:sheetData>
+                </x:worksheet>
+                """);
+        }
+        ms.Position = 0;
+
+        using var doc = ExcelToPdfConverter.Convert(ms);
+        var texts = doc.Pages.SelectMany(page => page.TextBlocks).Select(block => block.Text).ToList();
+        Assert.Contains("SharedPrefixedText", texts);
+        Assert.Contains("InlinePrefixedText", texts);
+        Assert.Contains("42", texts);
+    }
+
     /// <summary>
     /// Creates a minimal valid .xlsx file in memory with the given data.
     /// </summary>
