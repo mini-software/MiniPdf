@@ -21,7 +21,7 @@ from pathlib import Path
 def _create_word():
     """Create a fresh Word COM instance."""
     import win32com.client
-    word = win32com.client.Dispatch("Word.Application")
+    word = win32com.client.DispatchEx("Word.Application")
     word.Visible = False
     word.DisplayAlerts = False
     return word
@@ -90,7 +90,7 @@ def main():
             continue
         print(f"  Converting {docx.name} ...", end=" ", flush=True)
         try:
-            doc = word.Documents.Open(os.path.abspath(str(docx)))
+            doc = word.Documents.Open(os.path.abspath(str(docx)), ReadOnly=True, AddToRecentFiles=False)
             # ExportAsFixedFormat: OutputFileName, ExportFormat (wdExportFormatPDF=17)
             doc.ExportAsFixedFormat(os.path.abspath(pdf_path), 17)
             doc.Close(False)

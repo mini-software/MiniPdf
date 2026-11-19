@@ -160,6 +160,42 @@ public class DocxIssueFileTests
         Assert.InRange(footnoteText.Y, 74.9f, 75.1f);
     }
 
+    [WindowsEmfTheory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    [InlineData(5)]
+    public void Issue90_EmbeddedAlphaBitmap_MatchesNativePlayback(int imageIndex)
+    {
+        using var archive = System.IO.Compression.ZipFile.OpenRead(FindIssueDocx("TestIssue90.docx"));
+        var entry = archive.GetEntry($"word/media/image{imageIndex}.emf");
+        Assert.NotNull(entry);
+        using var stream = entry.Open();
+        using var buffer = new MemoryStream();
+        stream.CopyTo(buffer);
+        var source = buffer.ToArray();
+        byte[]? bitmap = null;
+        for (var offset = 0; offset < source.Length;)
+        {
+            var size = checked((int)BitConverter.ToUInt32(source, offset + 4));
+            Assert.InRange(size, 8, source.Length - offset);
+            if (BitConverter.ToUInt32(source, offset) == 114)
+            {
+                bitmap = source.AsSpan(offset, size).ToArray();
+                break;
+            }
+            offset += size;
+        }
+        Assert.NotNull(bitmap);
+        Assert.Equal(0x01FF8000u, BitConverter.ToUInt32(bitmap, 40));
+        var emf = EmfNativePlaybackTests.FrameMetafile("sparse-bounds", bitmap);
+        var expected = EmfNativePlaybackTests.PlayNative(emf, 32, 32);
+        var actual = EmfVectorRendererTests.Decode(EmfVectorRenderer.Render(emf, 32, 32), 32, 32);
+
+        EmfNativePlaybackTests.AssertPixelsEqual(actual, expected, 32, 32);
+    }
+
     [Fact]
     public void Issue91_DecomposedVietnameseText_IsNormalizedBeforeRendering()
     {
