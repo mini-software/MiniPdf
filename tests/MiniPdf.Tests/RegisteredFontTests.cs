@@ -67,4 +67,30 @@ public class RegisteredFontTests : IDisposable
 
         Assert.Equal("NotoSansTC", Assert.Single(snapshot).Name);
     }
+
+    [Fact]
+    public void MetafileResolverUsesTheRegisteredFamilyWithoutSubstitution()
+    {
+        var data = TrueTypeGlyphReaderTests.CreateFont(TrueTypeGlyphReaderTests.Box());
+        MiniPdf.RegisterFont("MiniPdfRegisteredMetafileFace", data);
+
+        Assert.Same(data, PdfWriter.ResolveMetafileFont("MiniPdfRegisteredMetafileFace", false, false));
+    }
+
+    [Fact]
+    public void MetafileResolverUsesSameFamilyOutlinesForSyntheticBold()
+    {
+        var data = TrueTypeGlyphReaderTests.CreateFont(TrueTypeGlyphReaderTests.Box());
+        TrueTypeGlyphReaderTests.Write16(data, TrueTypeGlyphReaderTests.TableOffset(data, "OS/2") + 4, 400);
+        MiniPdf.RegisterFont("MiniPdfRegisteredMetafileFace", data);
+
+        Assert.Same(data, PdfWriter.ResolveMetafileFont("MiniPdfRegisteredMetafileFace", true, false));
+    }
+
+    [Fact]
+    public void MetafileResolverRejectsAnUnavailableFamily()
+    {
+        Assert.Throws<NotSupportedException>(() =>
+            PdfWriter.ResolveMetafileFont("MiniPdfNoSuchMetafileFamilyF6DD51", false, false));
+    }
 }

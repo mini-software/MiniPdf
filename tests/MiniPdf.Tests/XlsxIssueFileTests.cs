@@ -64,21 +64,22 @@ public class XlsxIssueFileTests
 
     private static void AssertHasDrawingContent(byte[] png)
     {
-        using var stream = new MemoryStream(png, writable: false);
-        using var bitmap = new global::MiniSoftware.Drawing.Imaging.Bitmap(stream);
+        Assert.True(PdfWriter.TryDecodePngToRgb(png, out var width, out var height, out var rgb, out var alpha));
         var visiblePixels = 0;
         var hasRed = false;
         var hasBlue = false;
-        for (var row = 0; row < bitmap.Height; row += 2)
+        for (var row = 0; row < height; row += 2)
         {
-            for (var column = 0; column < bitmap.Width; column += 2)
+            for (var column = 0; column < width; column += 2)
             {
-                var color = bitmap.GetPixel(column, row);
-                if (color.A > 0 && (color.R < 250 || color.G < 250 || color.B < 250))
+                var position = row * width + column;
+                var a = alpha == null ? (byte)255 : alpha[position];
+                var r = rgb[position * 3]; var g = rgb[position * 3 + 1]; var b = rgb[position * 3 + 2];
+                if (a > 0 && (r < 250 || g < 250 || b < 250))
                     visiblePixels++;
-                if (color.A > 0 && color.R > color.G * 1.5 && color.R > color.B * 1.5)
+                if (a > 0 && r > g * 1.5 && r > b * 1.5)
                     hasRed = true;
-                if (color.A > 0 && color.B > color.R * 1.5 && color.B > color.G * 1.5)
+                if (a > 0 && b > r * 1.5 && b > g * 1.5)
                     hasBlue = true;
             }
         }

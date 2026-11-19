@@ -1861,7 +1861,7 @@ internal sealed class PdfWriter
         return false;
     }
 
-    private static bool TryDecodePngToRgb(byte[] data, out int width, out int height, out byte[] rgb, out byte[]? alpha)
+    internal static bool TryDecodePngToRgb(byte[] data, out int width, out int height, out byte[] rgb, out byte[]? alpha)
     {
         width = 1; height = 1; rgb = new byte[] { 255, 255, 255 }; alpha = null;
         if (data.Length < 33) return false;
@@ -2663,9 +2663,53 @@ internal sealed class PdfWriter
         return true;
     }
 
-    private static byte[] LoadPreferredTtfFont(string path, string fontName)
+    internal static byte[] ResolveMetafileFont(string fontName, bool bold, bool italic)
     {
-        var raw = File.ReadAllBytes(path);
+        var suffix = bold && italic ? " Bold Italic" : bold ? " Bold" : italic ? " Italic" : "";
+        byte[]? FindExactBytes(string name)
+        {
+            var target = NormalizeFontName(name);
+            foreach (var registered in MiniPdf.GetRegisteredFonts())
+                if (NormalizeFontName(registered.Name) == target)
+                    return LoadPreferredTtfFontBytes(registered.Data, name, true);
+            var path = FindExactFontByPreferredName(name);
+            return path == null ? null : LoadPreferredTtfFontBytes(File.ReadAllBytes(path), name, true);
+        }
+        bool HasRequestedStyle(byte[] data)
+        {
+            if (!bold && !italic) return true;
+            var (offset, length) = FindTable(data, "OS/2");
+            if (offset == 0 || length < 64)
+                throw new InvalidDataException("Metafile font style requires a valid OS/2 table.");
+            var weight = ReadU16(data, (int)offset + 4);
+            var flags = ReadU16(data, (int)offset + 62);
+            return (!bold || weight >= 600 || (flags & 0x20) != 0)
+                && (!italic || (flags & 0x201) != 0);
+        }
+        if (suffix.Length != 0)
+        {
+            var styled = FindExactBytes(fontName + suffix);
+            if (styled != null && HasRequestedStyle(styled)) return styled;
+        }
+        var regular = FindExactBytes(fontName)
+            ?? throw new NotSupportedException($"Metafile font '{fontName}' is not available; no family substitution was made.");
+        if (HasRequestedStyle(regular)) return regular;
+        var (family, _) = ReadFontNames(regular);
+        if (!string.IsNullOrEmpty(family))
+        {
+            var styled = FindExactBytes(family + suffix);
+            if (styled != null && HasRequestedStyle(styled)) return styled;
+        }
+        if (bold && !italic && new TrueTypeGlyphReader(regular).NeedsSyntheticBold)
+            return regular;
+        throw new NotSupportedException($"Metafile font '{fontName}' has no supported requested style (bold={bold}, italic={italic}).");
+    }
+
+    private static byte[] LoadPreferredTtfFont(string path, string fontName) =>
+        LoadPreferredTtfFontBytes(File.ReadAllBytes(path), fontName, false);
+
+    private static byte[] LoadPreferredTtfFontBytes(byte[] raw, string fontName, bool exactFace)
+    {
         if (raw.Length > 12 && raw[0] == 't' && raw[1] == 't' && raw[2] == 'c' && raw[3] == 'f')
         {
             var numFonts = (int)ReadU32(raw, 8);
@@ -2687,7 +2731,7 @@ internal sealed class PdfWriter
                 if (familyKey == target || fullKey == target)
                     return ExtractTtfFromTtc(raw, offset);
 
-                if (partialMatchOffset < 0
+                if (!exactFace && partialMatchOffset < 0
                     && ((fullKey.Length > 0 && fullKey.Contains(target, StringComparison.Ordinal))
                         || (familyKey.Length > 0 && familyKey.Contains(target, StringComparison.Ordinal))
                         || IsFontAliasMatch(target, fullKey)
@@ -2695,6 +2739,8 @@ internal sealed class PdfWriter
                     partialMatchOffset = offset;
             }
 
+            if (exactFace)
+                throw new NotSupportedException($"No exact '{fontName}' face exists in the TrueType collection.");
             return ExtractTtfFromTtc(raw, partialMatchOffset >= 0 ? partialMatchOffset : fallbackOffset);
         }
 
