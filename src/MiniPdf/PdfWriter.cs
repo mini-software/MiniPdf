@@ -2691,8 +2691,19 @@ internal sealed class PdfWriter
             var styled = FindExactBytes(fontName + suffix);
             if (styled != null && HasRequestedStyle(styled)) return styled;
         }
-        var regular = FindExactBytes(fontName)
-            ?? throw new NotSupportedException($"Metafile font '{fontName}' is not available; no family substitution was made.");
+        var regular = FindExactBytes(fontName);
+        if (regular == null && CjkFontFileMap.ContainsKey(fontName))
+        {
+            var fallbackPath = FindSystemFontByPreferredName(fontName);
+            if (fallbackPath != null)
+            {
+                regular = LoadTtfFontFromBytes(File.ReadAllBytes(fallbackPath));
+                var (fallbackFamily, _) = ReadFontNames(regular);
+                System.Diagnostics.Trace.TraceWarning("Metafile font '{0}' is unavailable; using existing CJK fallback '{1}'.", fontName, fallbackFamily);
+            }
+        }
+        if (regular == null)
+            throw new NotSupportedException($"Metafile font '{fontName}' is not available; no family substitution was made.");
         if (HasRequestedStyle(regular)) return regular;
         var (family, _) = ReadFontNames(regular);
         if (!string.IsNullOrEmpty(family))
