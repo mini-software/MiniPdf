@@ -24,6 +24,19 @@ public class ExcelTableStyleTests
         Assert.False(sheet.Rows[1][2].Italic);
     }
 
+    [Fact]
+    public void CellFill_StaysOnTopOfTableStyle()
+    {
+        // A4 has its own red fill. B4 in the same row has none.
+        using var stream = CreateWorkbookWithStyledTable();
+
+        var sheet = Assert.Single(ExcelReader.ReadSheets(stream));
+
+        Assert.Equal(PdfColor.FromRgb(0xFF, 0x00, 0x00), sheet.Rows[3][0].FillColor);
+        Assert.True(sheet.Rows[3][0].Italic);
+        Assert.Equal(PdfColor.FromRgb(0xDD, 0xF4, 0xF9), sheet.Rows[3][1].FillColor);
+    }
+
     private static MemoryStream CreateWorkbookWithStyledTable()
     {
         var ms = new MemoryStream();
@@ -81,6 +94,7 @@ public class ExcelTableStyleTests
                         <row r="1"><c r="A1" t="s"><v>0</v></c><c r="B1" t="s"><v>1</v></c><c r="C1" t="s"><v>2</v></c></row>
                         <row r="2"><c r="A2" t="s"><v>3</v></c><c r="B2"><v>35</v></c><c r="C2" t="s"><v>2</v></c></row>
                         <row r="3"><c r="A3" t="s"><v>4</v></c><c r="B3"><v>25</v></c><c r="C3" t="s"><v>2</v></c></row>
+                        <row r="4"><c r="A4" s="1" t="s"><v>3</v></c><c r="B4"><v>15</v></c></row>
                     </sheetData>
                     <tableParts count="1"><tablePart r:id="rId1"/></tableParts>
                 </worksheet>
@@ -98,7 +112,7 @@ public class ExcelTableStyleTests
                 """
                 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
                 <table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
-                       id="1" name="Items" displayName="Items" ref="A1:B3" dataDxfId="0">
+                       id="1" name="Items" displayName="Items" ref="A1:B4" dataDxfId="0">
                     <tableColumns count="2">
                         <tableColumn id="1" name="Item"/>
                         <tableColumn id="2" name="Qty"/>
@@ -112,13 +126,17 @@ public class ExcelTableStyleTests
                 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
                 <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
                     <fonts count="1"><font><sz val="11"/><name val="Calibri"/></font></fonts>
-                    <fills count="2">
+                    <fills count="3">
                         <fill><patternFill patternType="none"/></fill>
                         <fill><patternFill patternType="gray125"/></fill>
+                        <fill><patternFill patternType="solid"><fgColor rgb="FFFF0000"/></patternFill></fill>
                     </fills>
                     <borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>
                     <cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
-                    <cellXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/></cellXfs>
+                    <cellXfs count="2">
+                        <xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>
+                        <xf numFmtId="0" fontId="0" fillId="2" borderId="0" xfId="0" applyFill="1"/>
+                    </cellXfs>
                     <dxfs count="2">
                         <dxf><font><i/></font></dxf>
                         <dxf><fill><patternFill><bgColor rgb="FFDDF4F9"/></patternFill></fill></dxf>

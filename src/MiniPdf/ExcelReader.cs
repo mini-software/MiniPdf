@@ -735,7 +735,8 @@ internal static class ExcelReader
 
             // Data rows: layer the wholeTable element, row stripes, the table's
             // data format, then each column's data format. Each layer adds to
-            // the ones before it.
+            // the ones before it. A fill set on the cell itself is direct
+            // formatting and stays on top of every table layer.
             var dataStart = startRow + headerRowCount;
             var dataEnd = totalsRowCount > 0 ? endRow - totalsRowCount : endRow;
             var directDataStyle = GetDxfStyle(dxfInfos, dataDxf);
@@ -749,6 +750,7 @@ internal static class ExcelReader
                 for (var c = startCol; c <= endCol && c < rows[r].Count; c++)
                 {
                     var cell = rows[r][c];
+                    var ownFill = cell.FillColor;
                     if (namedWholeStyle != null) cell = ApplyDxfStyle(cell, namedWholeStyle);
                     if (stripeStyle != null) cell = ApplyDxfStyle(cell, stripeStyle);
                     if (directDataStyle != null) cell = ApplyDxfStyle(cell, directDataStyle);
@@ -760,17 +762,13 @@ internal static class ExcelReader
                         cell = ApplyDxfStyle(cell, columnDataStyle);
                     }
 
-                    rows[r][c] = cell;
-                }
-            }
+                    // First column: apply firstColumn DXF style (when showFirstColumn)
+                    if (c == startCol && showFirstColumn && namedFirstColStyle != null)
+                        cell = ApplyDxfStyle(cell, namedFirstColStyle);
 
-            // First column: apply firstColumn DXF style (when showFirstColumn)
-            if (showFirstColumn && namedFirstColStyle != null)
-            {
-                for (var r = dataStart; r <= dataEnd && r < rows.Count; r++)
-                {
-                    if (startCol < rows[r].Count)
-                        rows[r][startCol] = ApplyDxfStyle(rows[r][startCol], namedFirstColStyle);
+                    if (ownFill != null) cell = cell with { FillColor = ownFill };
+
+                    rows[r][c] = cell;
                 }
             }
         }
