@@ -3782,9 +3782,11 @@ internal static class DocxToPdfConverter
                     var colWidths = CalculateTableColumnWidths(table, effectiveTableWidth);
                     var cellPaddingH = (table.CellMarginLeft + table.CellMarginRight) / 2;
                     var cellPaddingV = Math.Max(0f, Math.Max(table.CellMarginTop, table.CellMarginBottom));
+                    // Page numbers are unknown here, so placeholders resolve as page 1 of 1.
+                    var measuredTable = ResolveTablePagePlaceholders(table, 1, 1);
                     for (var rowIndex = 0; rowIndex < table.Rows.Count; rowIndex++)
                     {
-                        var row = table.Rows[rowIndex];
+                        var row = measuredTable.Rows[rowIndex];
                         var rowH = CalculateRowHeight(row, colWidths, cellPaddingH, cellPaddingV, options, table.StyleLineSpacing, table.StyleSpacingAfter)
                             + GetRowBorderHeight(table, rowIndex);
                         if (row.Height > 0)
@@ -3966,7 +3968,8 @@ internal static class DocxToPdfConverter
                 }
                 case DocxTable table:
                 {
-                    y = RenderHeaderFooterTable(page, options, table, y);
+                    var effectivePageNum = sectionPageNum > 0 ? sectionPageNum : (pageIndex + 1);
+                    y = RenderHeaderFooterTable(page, options, ResolveTablePagePlaceholders(table, effectivePageNum, totalPages), y);
                     lastSpacingAfter = 0;
                     isFirst = false;
                     break;
@@ -5829,6 +5832,45 @@ internal static class DocxToPdfConverter
     private static int GetWrapCharWidth(char ch, bool useCalibriWidths = true)
     {
         return useCalibriWidths ? GetCalibrCharWidth(ch) : GetHelveticaCharWidth(ch);
+    }
+
+    /// <summary>
+    /// Returns <paramref name="table"/> with {PAGE}, {PAGE:roman}, {PAGE:ROMAN} and {NUMPAGES}
+    /// placeholders in its cell text resolved, so that the row heights and the line wrapping of a
+    /// header/footer table are computed from the text that is drawn. The table itself is returned
+    /// when no cell carries a placeholder.
+    /// </summary>
+    private static DocxTable ResolveTablePagePlaceholders(DocxTable table, int pageNum, int totalPages)
+    {
+        var hasPlaceholder = false;
+        foreach (var row in table.Rows)
+            foreach (var cell in row.Cells)
+                foreach (var para in cell.Paragraphs)
+                    foreach (var run in para.Runs)
+                        if (run.Text.Contains("{PAGE") || run.Text.Contains("{NUMPAGES}"))
+                            hasPlaceholder = true;
+        if (!hasPlaceholder)
+            return table;
+
+        var rows = new List<DocxTableRow>(table.Rows.Count);
+        foreach (var row in table.Rows)
+        {
+            var cells = new List<DocxTableCell>(row.Cells.Count);
+            foreach (var cell in row.Cells)
+            {
+                var paragraphs = new List<DocxParagraph>(cell.Paragraphs.Count);
+                foreach (var para in cell.Paragraphs)
+                {
+                    var runs = new List<DocxRun>(para.Runs.Count);
+                    foreach (var run in para.Runs)
+                        runs.Add(run with { Text = ResolvePagePlaceholders(run.Text, pageNum, totalPages) });
+                    paragraphs.Add(para with { Runs = runs });
+                }
+                cells.Add(cell with { Paragraphs = paragraphs });
+            }
+            rows.Add(row with { Cells = cells });
+        }
+        return table with { Rows = rows };
     }
 
     /// <summary>
