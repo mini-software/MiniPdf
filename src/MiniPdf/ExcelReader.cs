@@ -734,9 +734,10 @@ internal static class ExcelReader
             }
 
             // Data rows: layer the wholeTable element, row stripes, the table's
-            // data format, then each column's data format. Each layer adds to
-            // the ones before it. A fill set on the cell itself is direct
-            // formatting and stays on top of every table layer.
+            // data format, each column's data format, then the firstColumn
+            // element. Each layer adds to the ones before it. A fill set on the
+            // cell itself is direct formatting, so it is restored after the
+            // table layers.
             var dataStart = startRow + headerRowCount;
             var dataEnd = totalsRowCount > 0 ? endRow - totalsRowCount : endRow;
             var directDataStyle = GetDxfStyle(dxfInfos, dataDxf);
@@ -762,7 +763,6 @@ internal static class ExcelReader
                         cell = ApplyDxfStyle(cell, columnDataStyle);
                     }
 
-                    // First column: apply firstColumn DXF style (when showFirstColumn)
                     if (c == startCol && showFirstColumn && namedFirstColStyle != null)
                         cell = ApplyDxfStyle(cell, namedFirstColStyle);
 

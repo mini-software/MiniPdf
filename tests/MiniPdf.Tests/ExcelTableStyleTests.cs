@@ -37,8 +37,27 @@ public class ExcelTableStyleTests
         Assert.Equal(PdfColor.FromRgb(0xDD, 0xF4, 0xF9), sheet.Rows[3][1].FillColor);
     }
 
-    private static MemoryStream CreateWorkbookWithStyledTable()
+    [Fact]
+    public void CellFill_StaysOnTopOfRowStripeAndFirstColumn()
     {
+        // Rows 2 and 4 are first-stripe rows. A4 has its own red fill.
+        using var stream = CreateWorkbookWithStyledTable(stripesAndFirstColumn: true);
+
+        var sheet = Assert.Single(ExcelReader.ReadSheets(stream));
+
+        var stripeFill = PdfColor.FromRgb(0x00, 0xB0, 0x50);
+        Assert.Equal(stripeFill, sheet.Rows[1][0].FillColor);
+        Assert.Equal(stripeFill, sheet.Rows[3][1].FillColor);
+        Assert.Equal(PdfColor.FromRgb(0xFF, 0x00, 0x00), sheet.Rows[3][0].FillColor);
+        // The firstColumn element still sets the font of a cell that keeps its own fill.
+        Assert.True(sheet.Rows[1][0].Bold);
+        Assert.True(sheet.Rows[3][0].Bold);
+        Assert.False(sheet.Rows[3][1].Bold);
+    }
+
+    private static MemoryStream CreateWorkbookWithStyledTable(bool stripesAndFirstColumn = false)
+    {
+        var flag = stripesAndFirstColumn ? "1" : "0";
         var ms = new MemoryStream();
         using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
         {
@@ -109,7 +128,7 @@ public class ExcelTableStyleTests
                 """);
 
             AddEntry(archive, "xl/tables/table1.xml",
-                """
+                $"""
                 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
                 <table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
                        id="1" name="Items" displayName="Items" ref="A1:B4" dataDxfId="0">
@@ -117,7 +136,7 @@ public class ExcelTableStyleTests
                         <tableColumn id="1" name="Item"/>
                         <tableColumn id="2" name="Qty"/>
                     </tableColumns>
-                    <tableStyleInfo name="Custom" showFirstColumn="0" showLastColumn="0" showRowStripes="0" showColumnStripes="0"/>
+                    <tableStyleInfo name="Custom" showFirstColumn="{flag}" showLastColumn="0" showRowStripes="{flag}" showColumnStripes="0"/>
                 </table>
                 """);
 
@@ -137,13 +156,17 @@ public class ExcelTableStyleTests
                         <xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>
                         <xf numFmtId="0" fontId="0" fillId="2" borderId="0" xfId="0" applyFill="1"/>
                     </cellXfs>
-                    <dxfs count="2">
+                    <dxfs count="4">
                         <dxf><font><i/></font></dxf>
                         <dxf><fill><patternFill><bgColor rgb="FFDDF4F9"/></patternFill></fill></dxf>
+                        <dxf><fill><patternFill><bgColor rgb="FF00B050"/></patternFill></fill></dxf>
+                        <dxf><font><b/></font></dxf>
                     </dxfs>
                     <tableStyles count="1" defaultTableStyle="Custom">
-                        <tableStyle name="Custom" pivot="0" count="1">
+                        <tableStyle name="Custom" pivot="0" count="3">
                             <tableStyleElement type="wholeTable" dxfId="1"/>
+                            <tableStyleElement type="firstRowStripe" dxfId="2"/>
+                            <tableStyleElement type="firstColumn" dxfId="3"/>
                         </tableStyle>
                     </tableStyles>
                 </styleSheet>
