@@ -733,7 +733,9 @@ internal static class ExcelReader
                 }
             }
 
-            // Data rows: apply wholeTable fill and row stripe banding
+            // Data rows: layer the wholeTable element, row stripes, the table's
+            // data format, then each column's data format. Each layer adds to
+            // the ones before it.
             var dataStart = startRow + headerRowCount;
             var dataEnd = totalsRowCount > 0 ? endRow - totalsRowCount : endRow;
             var directDataStyle = GetDxfStyle(dxfInfos, dataDxf);
@@ -747,8 +749,6 @@ internal static class ExcelReader
                 for (var c = startCol; c <= endCol && c < rows[r].Count; c++)
                 {
                     var cell = rows[r][c];
-                    // The table style is the base layer; the table's own data
-                    // format adds to it and does not replace it.
                     if (namedWholeStyle != null) cell = ApplyDxfStyle(cell, namedWholeStyle);
                     if (stripeStyle != null) cell = ApplyDxfStyle(cell, stripeStyle);
                     if (directDataStyle != null) cell = ApplyDxfStyle(cell, directDataStyle);
