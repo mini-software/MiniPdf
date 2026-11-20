@@ -747,9 +747,11 @@ internal static class ExcelReader
                 for (var c = startCol; c <= endCol && c < rows[r].Count; c++)
                 {
                     var cell = rows[r][c];
-                    if (directDataStyle != null) cell = ApplyDxfStyle(cell, directDataStyle);
-                    else if (namedWholeStyle != null) cell = ApplyDxfStyle(cell, namedWholeStyle);
+                    // The table style is the base layer; the table's own data
+                    // format adds to it and does not replace it.
+                    if (namedWholeStyle != null) cell = ApplyDxfStyle(cell, namedWholeStyle);
                     if (stripeStyle != null) cell = ApplyDxfStyle(cell, stripeStyle);
+                    if (directDataStyle != null) cell = ApplyDxfStyle(cell, directDataStyle);
 
                     var relativeCol = c - startCol;
                     if (relativeCol >= 0 && relativeCol < columnDataDxfs.Count &&
