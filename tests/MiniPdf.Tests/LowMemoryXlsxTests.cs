@@ -65,6 +65,16 @@ public class LowMemoryXlsxTests
     }
 
     [Fact]
+    public void LowMemoryRows_PreserveNumericValue()
+    {
+        using var rows = new FileBackedList<List<ExcelCell>>(
+            LowMemorySerialization.ReadRow, LowMemorySerialization.WriteRow);
+        rows.Add(new List<ExcelCell> { new("4", null, null, NumericValue: 4.4) });
+
+        Assert.Equal((double?)4.4, rows[0][0].NumericValue);
+    }
+
+    [Fact]
     public void LowMemory_NonSeekableStreams_ProduceIdenticalPdfAndStayOpen()
     {
         using var workbook = CreateWorkbook(100);

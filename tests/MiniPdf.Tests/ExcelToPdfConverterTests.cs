@@ -1562,6 +1562,11 @@ public class ExcelToPdfConverterTests
                       <x:formula>$H$1</x:formula><x:formula>10</x:formula>
                     </x:cfRule>
                   </x:conditionalFormatting>
+                  <x:conditionalFormatting sqref="H1">
+                    <x:cfRule type="expression" dxfId="0" priority="4">
+                      <x:formula>H1=H1</x:formula>
+                    </x:cfRule>
+                  </x:conditionalFormatting>
                 </x:worksheet>
                 """);
         }
@@ -1572,6 +1577,7 @@ public class ExcelToPdfConverterTests
         Assert.True(parsedSheet.Rows[0][4].Italic);
         Assert.Equal("4", parsedSheet.Rows[0][7].Text);
         Assert.False(parsedSheet.Rows[0][6].Italic);
+        Assert.True(parsedSheet.Rows[0][7].Italic);
         ms.Position = 0;
 
         using var doc = ExcelToPdfConverter.Convert(ms,

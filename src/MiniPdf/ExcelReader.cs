@@ -1573,7 +1573,8 @@ internal static class ExcelReader
 
         if (TryResolveRhsValue(rows, rhsText, targetRow, targetCol, anchorRow, anchorCol, definedNames, out var rhsCellText, out var rhsNumber))
         {
-            if (TryParseCellNumber(lhsText, out var lhsNumber) && rhsNumber.HasValue)
+            if (row < rows.Count && col < rows[row].Count &&
+                TryGetCellNumericValue(rows[row][col], out var lhsNumber) && rhsNumber.HasValue)
                 return CompareNumbers(lhsNumber, rhsNumber.Value, op);
 
             if (rhsCellText != null)
