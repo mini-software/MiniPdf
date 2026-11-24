@@ -1517,10 +1517,11 @@ public class ExcelToPdfConverterTests
                 """);
             AddEntry(archive, "xl/styles.xml", $$"""
                 <x:styleSheet xmlns:x="{{main}}">
-                  <x:fonts count="1"><x:font><x:sz val="11"/><x:name val="Calibri"/></x:font></x:fonts>
+                  <x:fonts count="1"><x:font><x:sz val="11"/><x:name val="Calibri"/><x:b val="0"/><x:i val="0"/><x:u val="none"/><x:strike val="0"/></x:font></x:fonts>
                   <x:fills count="1"><x:fill><x:patternFill patternType="none"/></x:fill></x:fills>
                   <x:borders count="1"><x:border><x:left/><x:right/><x:top/><x:bottom/><x:diagonal/></x:border></x:borders>
-                  <x:cellXfs count="1"><x:xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></x:cellXfs>
+                  <x:cellXfs count="1"><x:xf numFmtId="9" fontId="0" fillId="0" borderId="0"/></x:cellXfs>
+                  <x:dxfs count="1"><x:dxf><x:font><x:i/></x:font></x:dxf></x:dxfs>
                 </x:styleSheet>
                 """);
             AddEntry(archive, "xl/sharedStrings.xml", $$"""
@@ -1534,19 +1535,28 @@ public class ExcelToPdfConverterTests
                     <x:row r="1">
                       <x:c r="A1" t="s"><x:v>0</x:v></x:c>
                       <x:c r="B1" t="inlineStr"><x:is><x:t>InlinePrefixedText</x:t></x:is></x:c>
-                      <x:c r="C1"><x:v>42</x:v></x:c>
+                      <x:c r="C1" s="0"><x:v>0.42</x:v></x:c>
+                      <x:c r="D1" s="0"><x:v>20</x:v></x:c>
                     </x:row>
                   </x:sheetData>
+                  <x:conditionalFormatting sqref="D1">
+                    <x:cfRule type="cellIs" dxfId="0" priority="1" operator="between">
+                      <x:formula>1</x:formula><x:formula>10</x:formula>
+                    </x:cfRule>
+                  </x:conditionalFormatting>
                 </x:worksheet>
                 """);
         }
         ms.Position = 0;
 
-        using var doc = ExcelToPdfConverter.Convert(ms);
-        var texts = doc.Pages.SelectMany(page => page.TextBlocks).Select(block => block.Text).ToList();
-        Assert.Contains("SharedPrefixedText", texts);
-        Assert.Contains("InlinePrefixedText", texts);
-        Assert.Contains("42", texts);
+        using var doc = ExcelToPdfConverter.Convert(ms,
+            new ExcelToPdfConverter.ConversionOptions { Sheets = new[] { "Prefixed" } });
+        var textBlocks = doc.Pages.SelectMany(page => page.TextBlocks).ToList();
+        Assert.Contains(textBlocks, block => block.Text == "SharedPrefixedText");
+        Assert.Contains(textBlocks, block => block.Text == "InlinePrefixedText");
+        Assert.Contains(textBlocks, block => block.Text == "42%" && !block.Bold && !block.Italic &&
+            !block.Underline && !block.Strikethrough);
+        Assert.Contains(textBlocks, block => block.Text == "2000%" && !block.Italic);
     }
 
     /// <summary>

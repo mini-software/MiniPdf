@@ -370,10 +370,10 @@ internal static class ExcelReader
                 fontName = nameEl.Attribute("val")?.Value;
 
             // Read bold / italic / underline / strikethrough
-            var bold = font.Element(ns + "b") != null;
-            var italic = font.Element(ns + "i") != null;
-            var underline = font.Element(ns + "u") != null;
-            var strikethrough = font.Element(ns + "strike") != null;
+            var bold = ReadBooleanFontFlag(font.Element(ns + "b")) ?? false;
+            var italic = ReadBooleanFontFlag(font.Element(ns + "i")) ?? false;
+            var underline = ReadUnderlineFlag(font.Element(ns + "u")) ?? false;
+            var strikethrough = ReadBooleanFontFlag(font.Element(ns + "strike")) ?? false;
 
             styles.Add(new FontStyleInfo(color, fontSize, bold, italic, underline, fontName, strikethrough));
         }
@@ -1313,9 +1313,9 @@ internal static class ExcelReader
     /// <summary>
     /// Reads conditional formatting rules from a worksheet entry.
     /// </summary>
-    private static List<(string Sqref, string Type, string Operator, string Formula, int DxfId)> ReadConditionalFormatting(ZipArchiveEntry entry)
+    private static List<(string Sqref, string Type, string Operator, string Formula, string Formula2, int DxfId)> ReadConditionalFormatting(ZipArchiveEntry entry)
     {
-        var rules = new List<(string, string, string, string, int)>();
+        var rules = new List<(string, string, string, string, string, int)>();
         using var stream = entry.Open();
         var doc = XDocument.Load(stream);
         var ns = doc.Root?.Name.Namespace ?? XNamespace.None;
@@ -1327,10 +1327,12 @@ internal static class ExcelReader
             {
                 var type = rule.Attribute("type")?.Value ?? "";
                 var op = rule.Attribute("operator")?.Value ?? "";
-                var formula = rule.Element(ns + "formula")?.Value ?? "";
+                var formulas = rule.Elements(ns + "formula").Take(2).ToArray();
+                var formula = formulas.ElementAtOrDefault(0)?.Value ?? "";
+                var formula2 = formulas.ElementAtOrDefault(1)?.Value ?? "";
                 var dxfIdStr = rule.Attribute("dxfId")?.Value;
                 if (int.TryParse(dxfIdStr, out var dxfId))
-                    rules.Add((sqref, type, op, formula, dxfId));
+                    rules.Add((sqref, type, op, formula, formula2, dxfId));
             }
         }
 
@@ -1398,11 +1400,11 @@ internal static class ExcelReader
     /// </summary>
     private static void ApplyConditionalFormatting(
         IList<List<ExcelCell>> rows,
-        List<(string Sqref, string Type, string Operator, string Formula, int DxfId)> cfRules,
+        List<(string Sqref, string Type, string Operator, string Formula, string Formula2, int DxfId)> cfRules,
         List<DxfStyleInfo> dxfStyles,
         Dictionary<string, double> definedNames)
     {
-        foreach (var (sqref, type, op, formula, dxfId) in cfRules)
+        foreach (var (sqref, type, op, formula, formula2, dxfId) in cfRules)
         {
             if (dxfId < 0 || dxfId >= dxfStyles.Count) continue;
             var dxfStyle = dxfStyles[dxfId];
@@ -1448,7 +1450,7 @@ internal static class ExcelReader
                         var cell = row[c];
                         if (type != "expression" && string.IsNullOrEmpty(cell.Text)) continue;
 
-                        var matches = EvaluateCondition(rows, cell, type, op, formula,
+                        var matches = EvaluateCondition(rows, cell, type, op, formula, formula2,
                             r, c, startRow, startCol, definedNames);
 
                         if (matches)
@@ -1459,7 +1461,7 @@ internal static class ExcelReader
         }
     }
 
-    private static bool EvaluateCondition(IList<List<ExcelCell>> rows, ExcelCell cell, string type, string op, string formula,
+    private static bool EvaluateCondition(IList<List<ExcelCell>> rows, ExcelCell cell, string type, string op, string formula, string formula2,
         int targetRow, int targetCol, int anchorRow, int anchorCol,
         Dictionary<string, double> definedNames)
     {
@@ -1478,7 +1480,9 @@ internal static class ExcelReader
                     "notEqual" => Math.Abs(cellVal - threshold) >= 1e-10,
                     "lessThanOrEqual" => cellVal <= threshold,
                     "greaterThanOrEqual" => cellVal >= threshold,
-                    "between" => cellVal >= threshold, // simplified
+                    "between" => double.TryParse(formula2, System.Globalization.NumberStyles.Any,
+                        System.Globalization.CultureInfo.InvariantCulture, out var upperThreshold) &&
+                        cellVal >= threshold && cellVal <= upperThreshold,
                     _ => false
                 };
             }
