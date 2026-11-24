@@ -1468,23 +1468,33 @@ internal static class ExcelReader
         if (type == "cellIs")
         {
             // Try numeric comparison first
-            if (TryGetCellNumericValue(cell, out var cellVal) &&
-                double.TryParse(formula, System.Globalization.NumberStyles.Any,
-                    System.Globalization.CultureInfo.InvariantCulture, out var threshold))
+            if (TryGetCellNumericValue(cell, out var cellVal))
             {
-                return op switch
+                if (op == "between")
                 {
-                    "lessThan" => cellVal < threshold,
-                    "greaterThan" => cellVal > threshold,
-                    "equal" => Math.Abs(cellVal - threshold) < 1e-10,
-                    "notEqual" => Math.Abs(cellVal - threshold) >= 1e-10,
-                    "lessThanOrEqual" => cellVal <= threshold,
-                    "greaterThanOrEqual" => cellVal >= threshold,
-                    "between" => double.TryParse(formula2, System.Globalization.NumberStyles.Any,
-                        System.Globalization.CultureInfo.InvariantCulture, out var upperThreshold) &&
-                        cellVal >= threshold && cellVal <= upperThreshold,
-                    _ => false
-                };
+                    if (!TryResolveRhsValue(rows, formula, targetRow, targetCol, anchorRow, anchorCol,
+                            definedNames, out _, out var lowerBound) || !lowerBound.HasValue ||
+                        !TryResolveRhsValue(rows, formula2, targetRow, targetCol, anchorRow, anchorCol,
+                            definedNames, out _, out var upperBound) || !upperBound.HasValue)
+                        return false;
+
+                    return cellVal >= lowerBound.Value && cellVal <= upperBound.Value;
+                }
+
+                if (double.TryParse(formula, System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.InvariantCulture, out var threshold))
+                {
+                    return op switch
+                    {
+                        "lessThan" => cellVal < threshold,
+                        "greaterThan" => cellVal > threshold,
+                        "equal" => Math.Abs(cellVal - threshold) < 1e-10,
+                        "notEqual" => Math.Abs(cellVal - threshold) >= 1e-10,
+                        "lessThanOrEqual" => cellVal <= threshold,
+                        "greaterThanOrEqual" => cellVal >= threshold,
+                        _ => false
+                    };
+                }
             }
 
             // Fall back to string comparison (e.g. operator=equal, formula="✔")
