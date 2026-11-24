@@ -1622,7 +1622,9 @@ internal static class ExcelReader
         if (cellRef.Success && TryResolveConditionalCellReference(cellRef, targetRow, targetCol, anchorRow, anchorCol, out var row, out var col))
         {
             text = GetCellText(rows, row, col);
-            if (TryParseCellNumber(text, out var parsed))
+            if (row < rows.Count && col < rows[row].Count && rows[row][col].NumericValue is { } numericValue)
+                number = numericValue;
+            else if (TryParseCellNumber(text, out var parsed))
                 number = parsed;
             return true;
         }
@@ -1733,6 +1735,11 @@ internal static class ExcelReader
     private static bool TryGetCellNumericValue(ExcelCell cell, out double value)
     {
         value = 0;
+        if (cell.NumericValue is { } numericValue)
+        {
+            value = numericValue;
+            return true;
+        }
         if (string.IsNullOrWhiteSpace(cell.Text)) return false;
 
         // Strip common currency/accounting formatting: $, parentheses (negative), spaces
@@ -1990,6 +1997,12 @@ internal static class ExcelReader
                     }
                 }
 
+                double? numericValue = null;
+                if ((string.IsNullOrEmpty(type) || type == "n") &&
+                    double.TryParse(value, System.Globalization.NumberStyles.Any,
+                        System.Globalization.CultureInfo.InvariantCulture, out var parsedNumericValue))
+                    numericValue = parsedNumericValue;
+
                 // Resolve color and fill from style index
                 var styleAttr = cell.Attribute("s")?.Value;
                 PdfColor? color = null;
@@ -2119,7 +2132,7 @@ internal static class ExcelReader
                 text = NormalizeCellText(text);
                 string? link = null;
                 hyperlinks?.TryGetValue(normalizedRef, out link);
-                cells.Add(new ExcelCell(text, color, fillColor, cellAlignment, fontSize, bold, italic, underline, strikethrough, border, cellVerticalAlignment, wrapText, acctPrefix, fontName, cellIndent, cellBoldPrefixLen, link, cellTextRotation));
+                cells.Add(new ExcelCell(text, color, fillColor, cellAlignment, fontSize, bold, italic, underline, strikethrough, border, cellVerticalAlignment, wrapText, acctPrefix, fontName, cellIndent, cellBoldPrefixLen, link, cellTextRotation, numericValue));
                 lastColIndex = colIndex + 1;
             }
 
@@ -4709,7 +4722,8 @@ internal sealed record ExcelCell(
     int Indent = 0,
     int BoldPrefixLength = 0,
     string? Link = null,
-    int TextRotation = 0
+    int TextRotation = 0,
+    double? NumericValue = null
 );
 
 /// <summary>

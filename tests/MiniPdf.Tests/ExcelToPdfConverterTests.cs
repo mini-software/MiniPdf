@@ -1520,7 +1520,11 @@ public class ExcelToPdfConverterTests
                   <x:fonts count="1"><x:font><x:sz val="11"/><x:name val="Calibri"/><x:b val="0"/><x:i val="0"/><x:u val="none"/><x:strike val="0"/></x:font></x:fonts>
                   <x:fills count="1"><x:fill><x:patternFill patternType="none"/></x:fill></x:fills>
                   <x:borders count="1"><x:border><x:left/><x:right/><x:top/><x:bottom/><x:diagonal/></x:border></x:borders>
-                  <x:cellXfs count="2"><x:xf numFmtId="9" fontId="0" fillId="0" borderId="0"/><x:xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></x:cellXfs>
+                  <x:cellXfs count="3">
+                    <x:xf numFmtId="9" fontId="0" fillId="0" borderId="0"/>
+                    <x:xf numFmtId="0" fontId="0" fillId="0" borderId="0"/>
+                    <x:xf numFmtId="1" fontId="0" fillId="0" borderId="0"/>
+                  </x:cellXfs>
                   <x:dxfs count="1"><x:dxf><x:font><x:i/></x:font></x:dxf></x:dxfs>
                 </x:styleSheet>
                 """);
@@ -1539,6 +1543,8 @@ public class ExcelToPdfConverterTests
                       <x:c r="D1" s="1"><x:v>20</x:v></x:c>
                       <x:c r="E1" s="1"><x:v>5</x:v></x:c>
                       <x:c r="F1" s="1"><x:v>10</x:v></x:c>
+                      <x:c r="G1" s="1"><x:v>4.2</x:v></x:c>
+                      <x:c r="H1" s="2"><x:v>4.4</x:v></x:c>
                     </x:row>
                   </x:sheetData>
                   <x:conditionalFormatting sqref="D1">
@@ -1551,6 +1557,11 @@ public class ExcelToPdfConverterTests
                       <x:formula>1</x:formula><x:formula>$F$1</x:formula>
                     </x:cfRule>
                   </x:conditionalFormatting>
+                  <x:conditionalFormatting sqref="G1">
+                    <x:cfRule type="cellIs" dxfId="0" priority="3" operator="between">
+                      <x:formula>$H$1</x:formula><x:formula>10</x:formula>
+                    </x:cfRule>
+                  </x:conditionalFormatting>
                 </x:worksheet>
                 """);
         }
@@ -1559,6 +1570,8 @@ public class ExcelToPdfConverterTests
         var parsedSheet = ExcelReader.ReadSheets(ms).Single();
         Assert.False(parsedSheet.Rows[0][3].Italic);
         Assert.True(parsedSheet.Rows[0][4].Italic);
+        Assert.Equal("4", parsedSheet.Rows[0][7].Text);
+        Assert.False(parsedSheet.Rows[0][6].Italic);
         ms.Position = 0;
 
         using var doc = ExcelToPdfConverter.Convert(ms,
