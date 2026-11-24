@@ -201,6 +201,8 @@ internal static class LowMemorySerialization
             writer.Write(cell.BoldPrefixLength);
             WriteString(writer, cell.Link);
             writer.Write(cell.TextRotation);
+            writer.Write(cell.NumericValue.HasValue);
+            if (cell.NumericValue is { } numericValue) writer.Write(numericValue);
         }
     }
 
@@ -222,9 +224,18 @@ internal static class LowMemorySerialization
             var border = reader.ReadBoolean()
                 ? new CellBorderInfo(ReadBorderSide(reader), ReadBorderSide(reader), ReadBorderSide(reader), ReadBorderSide(reader))
                 : null;
+            var verticalAlignment = reader.ReadString();
+            var wrapText = reader.ReadBoolean();
+            var accountingPrefix = ReadString(reader);
+            var fontName = ReadString(reader);
+            var indent = reader.ReadInt32();
+            var boldPrefixLength = reader.ReadInt32();
+            var link = ReadString(reader);
+            var textRotation = reader.ReadInt32();
+            var numericValue = reader.ReadBoolean() ? reader.ReadDouble() : (double?)null;
             row.Add(new ExcelCell(text, color, fill, alignment, size, bold, italic, underline, strike, border,
-                reader.ReadString(), reader.ReadBoolean(), ReadString(reader), ReadString(reader),
-                reader.ReadInt32(), reader.ReadInt32(), ReadString(reader), reader.ReadInt32()));
+                verticalAlignment, wrapText, accountingPrefix, fontName, indent, boldPrefixLength, link,
+                textRotation, numericValue));
         }
         return row;
     }
