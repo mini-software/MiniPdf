@@ -839,7 +839,8 @@ public class DocxToPdfConverterTests
         {
           var textBlocks = doc.Pages[i].TextBlocks.Select(b => b.Text).ToList();
           var text = string.Concat(textBlocks);
-          Assert.DoesNotContain("Page {PAGE} of {NUMPAGES}", text, StringComparison.Ordinal);
+          Assert.DoesNotContain("Page {PAGE}", text, StringComparison.Ordinal);
+          Assert.DoesNotContain("of {NUMPAGES}", text, StringComparison.Ordinal);
           Assert.Contains($"Page {i + 1} of 2", textBlocks, StringComparer.Ordinal);
           Assert.Contains("Use {PAGE} in the template", textBlocks, StringComparer.Ordinal);
         }
@@ -858,6 +859,17 @@ public class DocxToPdfConverterTests
           var textBlocks = doc.Pages[i].TextBlocks.Select(b => b.Text).ToList();
           Assert.Contains($"Page {i} of 2", textBlocks, StringComparer.Ordinal);
         }
+      }
+
+      [Fact]
+      public void Convert_FooterPageFieldsInTable_PreservesBodyWhenResolvedFooterFits()
+      {
+        using var docxStream = CreateDocxWithFooterPageFieldsInTable(bodyParagraphCount: 42);
+
+        var doc = DocxToPdfConverter.Convert(docxStream);
+
+        Assert.Equal(2, doc.Pages.Count);
+        Assert.Equal(42, doc.Pages[0].TextBlocks.Count(b => b.Text == "Body line."));
       }
 
       [Fact]
@@ -2069,9 +2081,11 @@ public class DocxToPdfConverterTests
         return ms;
     }
 
-    private static MemoryStream CreateDocxWithFooterPageFieldsInTable(int? pageNumStart = null)
+    private static MemoryStream CreateDocxWithFooterPageFieldsInTable(int? pageNumStart = null, int bodyParagraphCount = 0)
     {
         var ms = new MemoryStream();
+        var bodyParagraphs = string.Concat(Enumerable.Repeat(
+            "<w:p><w:r><w:t>Body line.</w:t></w:r></w:p>", bodyParagraphCount));
 
         using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
         {
@@ -2108,6 +2122,7 @@ public class DocxToPdfConverterTests
                 <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
                   <w:body>
                     <w:p><w:r><w:t>First page</w:t></w:r></w:p>
+                    {bodyParagraphs}
                     <w:p><w:r><w:br w:type="page"/></w:r></w:p>
                     <w:p><w:r><w:t>Second page</w:t></w:r></w:p>
                     <w:sectPr>
