@@ -349,7 +349,7 @@ internal static class DocxToPdfConverter
                                 // from the closing section so it does not shift the next section's
                                 // first content downward on the new page.
                                 state.PendingVerticalSpace = 0;
-                                state.ForceNewPage();
+                                state.ForceNewPage(state.Options.MarginBottom);
                                 state.SectionStartSpacingAfter = sectionSpacingAfter;
                                 if (nextLayout.ColumnCount > 1)
                                     state.EnterMultiColumnSection(nextLayout.ColumnCount, nextLayout.ColumnSpacing, nextLayout.ColumnWidths, nextLayout.ColumnGaps);
@@ -425,6 +425,8 @@ internal static class DocxToPdfConverter
             }
         }
 
+        var sectionOptions = CreateSectionOptions(options, sectionLayouts, minimumTopMargins, minimumBottomMargins);
+
         // Render header/footer background shapes on all pages.
         if (docxDoc.HeaderShapes is { Count: > 0 } || docxDoc.FooterShapes is { Count: > 0 }
             || docxDoc.HeaderFooterImages is { Count: > 0 })
@@ -433,23 +435,26 @@ internal static class DocxToPdfConverter
             for (int pi = 0; pi < totalPages; pi++)
             {
                 var page = pdfDoc.Pages[pi];
+                var pageSectionIndex = GetPageSectionIndex(state.SectionStartPages, pi);
+                var renderSectionIndex = Math.Min(pageSectionIndex, sectionOptions.Length - 1);
+                var pageOptions = sectionOptions[renderSectionIndex];
 
                 if (docxDoc.HeaderShapes is { Count: > 0 })
                 {
                     foreach (var shape in docxDoc.HeaderShapes)
-                        RenderHeaderFooterShape(page, options, shape);
+                        RenderHeaderFooterShape(page, pageOptions, shape);
                 }
 
                 if (docxDoc.FooterShapes is { Count: > 0 })
                 {
                     foreach (var shape in docxDoc.FooterShapes)
-                        RenderHeaderFooterShape(page, options, shape);
+                        RenderHeaderFooterShape(page, pageOptions, shape);
                 }
 
                 if (docxDoc.HeaderFooterImages is { Count: > 0 })
                 {
                     foreach (var img in docxDoc.HeaderFooterImages)
-                        RenderHeaderFooterImage(page, options, img);
+                        RenderHeaderFooterImage(page, pageOptions, img);
                 }
             }
         }
@@ -471,15 +476,7 @@ internal static class DocxToPdfConverter
         var sectionPageIndexes = new int[pdfDoc.Pages.Count];
         for (int pi = 0; pi < sectionPageNumbers.Length; pi++)
         {
-            int pageSectionIdx = 0;
-            for (int si = state.SectionStartPages.Count - 1; si >= 0; si--)
-            {
-                if (pi >= state.SectionStartPages[si])
-                {
-                    pageSectionIdx = si;
-                    break;
-                }
-            }
+            var pageSectionIdx = GetPageSectionIndex(state.SectionStartPages, pi);
             sectionPageIndexes[pi] = pageSectionIdx;
             int ancestorIdx = pageSectionIdx;
             while (ancestorIdx > 0 && (ancestorIdx >= sectionLayouts.Count || sectionLayouts[ancestorIdx].PageNumStart < 0))
@@ -491,9 +488,9 @@ internal static class DocxToPdfConverter
             }
         }
 
-        var requiredMargins = EstimateHeaderFooterMargins(docxDoc, options, sectionLayouts,
+        var requiredMargins = EstimateHeaderFooterMargins(docxDoc, options, sectionOptions,
             sectionPageIndexes, sectionPageNumbers, pdfDoc.Pages.Count,
-            minimumTopMargins, minimumBottomMargins, hasHeaderElements, hasFooterElements, hasSectionFooters);
+            hasHeaderElements, hasFooterElements, hasSectionFooters);
         var pageCountChanged = previousPageCount.HasValue && previousPageCount.Value != pdfDoc.Pages.Count;
         if (requiredMargins.Expanded || pageCountChanged)
         {
@@ -518,16 +515,18 @@ internal static class DocxToPdfConverter
                 bool suppressDefaultHeader = isFirstPageOfDoc && firstPageTitlePg;
                 bool suppressDefaultFooter = isFirstPageOfDoc && firstPageTitlePg;
                 var pageSectionIdx = sectionPageIndexes[pi];
+                var renderSectionIndex = Math.Min(pageSectionIdx, sectionOptions.Length - 1);
+                var pageOptions = sectionOptions[renderSectionIndex];
                 var sectionPageNum = sectionPageNumbers[pi];
                 if (!suppressDefaultHeader && hasHeaderElements)
                 {
-                    var headerStartY = page.Height - options.HeaderMargin;
-                    RenderHeaderFooterElementsOnPage(page, options, docxDoc.HeaderElements!, headerStartY, pi, totalPages, sectionPageNum);
+                    var headerStartY = page.Height - pageOptions.HeaderMargin;
+                    RenderHeaderFooterElementsOnPage(page, pageOptions, docxDoc.HeaderElements!, headerStartY, pi, totalPages, sectionPageNum);
                 }
                 else if (suppressDefaultHeader && firstPageHeaderOverride is { Count: > 0 })
                 {
-                    var headerStartY = page.Height - options.HeaderMargin;
-                    RenderHeaderFooterElementsOnPage(page, options, firstPageHeaderOverride, headerStartY, pi, totalPages, sectionPageNum);
+                    var headerStartY = page.Height - pageOptions.HeaderMargin;
+                    RenderHeaderFooterElementsOnPage(page, pageOptions, firstPageHeaderOverride, headerStartY, pi, totalPages, sectionPageNum);
                 }
 
                 // Determine footer elements for this page: prefer per-section, fall back to global
@@ -552,10 +551,10 @@ internal static class DocxToPdfConverter
                 {
                     var trimmedFooter = TrimTrailingEmptyParagraphs(pageFooterElements);
                     var effectivePageNum = sectionPageNum >= 0 ? sectionPageNum : pi + 1;
-                    var footerContentHeight = EstimateElementsHeight(trimmedFooter, options, headerFooter: true,
+                    var footerContentHeight = EstimateElementsHeight(trimmedFooter, pageOptions, headerFooter: true,
                         pageNum: effectivePageNum, totalPages: totalPages);
-                    var footerStartY = options.FooterMargin + footerContentHeight;
-                    RenderHeaderFooterElementsOnPage(page, options, trimmedFooter, footerStartY, pi, totalPages, sectionPageNum);
+                    var footerStartY = pageOptions.FooterMargin + footerContentHeight;
+                    RenderHeaderFooterElementsOnPage(page, pageOptions, trimmedFooter, footerStartY, pi, totalPages, sectionPageNum);
                 }
             }
         }
@@ -567,19 +566,21 @@ internal static class DocxToPdfConverter
             for (int pi = 0; pi < totalPages; pi++)
             {
                 var page = pdfDoc.Pages[pi];
+                var renderSectionIndex = Math.Min(sectionPageIndexes[pi], sectionOptions.Length - 1);
+                var pageOptions = sectionOptions[renderSectionIndex];
                 var sectionPageNum = sectionPageNumbers[pi];
-                var usableW = page.Width - options.MarginLeft - options.MarginRight;
+                var usableW = page.Width - pageOptions.MarginLeft - pageOptions.MarginRight;
                 if (!hasHeaderElements && docxDoc.HeaderText != null)
                 {
-                    RenderHeaderFooterRuns(page, options, docxDoc.HeaderRuns, docxDoc.HeaderText,
+                    RenderHeaderFooterRuns(page, pageOptions, docxDoc.HeaderRuns, docxDoc.HeaderText,
                         pi, totalPages, headerFooterFontSize, headerColor, usableW,
-                        page.Height - options.HeaderMargin, sectionPageNum);
+                        page.Height - pageOptions.HeaderMargin, sectionPageNum);
                 }
                 if (!hasFooterElements && docxDoc.FooterText != null)
                 {
-                    RenderHeaderFooterRuns(page, options, docxDoc.FooterRuns, docxDoc.FooterText,
+                    RenderHeaderFooterRuns(page, pageOptions, docxDoc.FooterRuns, docxDoc.FooterText,
                         pi, totalPages, headerFooterFontSize, headerColor, usableW,
-                        options.FooterMargin, sectionPageNum);
+                        pageOptions.FooterMargin, sectionPageNum);
                 }
             }
         }
@@ -925,10 +926,12 @@ internal static class DocxToPdfConverter
             HasRenderedAnyContent = true;
         }
 
-        public void ForceNewPage()
+        public void ForceNewPage(float? nextBaseMarginBottom = null)
         {
             // Render footnotes before leaving the current page
             RenderPageFootnotes();
+            if (nextBaseMarginBottom.HasValue)
+                BaseMarginBottom = nextBaseMarginBottom.Value;
 
             // Restore margins if in multi-column mode
             if (ColumnCount > 1)
@@ -3730,31 +3733,45 @@ internal static class DocxToPdfConverter
             options.MarginBottom = Math.Max(options.MarginBottom, minimumBottomMargins[sectionIndex]);
     }
 
+    private static int GetPageSectionIndex(IReadOnlyList<int> sectionStartPages, int pageIndex)
+    {
+        for (var si = sectionStartPages.Count - 1; si >= 0; si--)
+        {
+            if (pageIndex >= sectionStartPages[si])
+                return si;
+        }
+        return 0;
+    }
+
     private static ConversionOptions CloneConversionOptions(ConversionOptions options)
     {
         return options.Clone();
     }
 
-    private static (float[] TopMargins, float[] BottomMargins, bool Expanded) EstimateHeaderFooterMargins(
-        DocxDocument docxDoc, ConversionOptions options, IReadOnlyList<DocxPageLayout> sectionLayouts,
-        int[] sectionPageIndexes, int[] sectionPageNumbers, int totalPages,
-        float[]? minimumTopMargins, float[]? minimumBottomMargins,
-        bool hasHeaderElements, bool hasFooterElements, bool hasSectionFooters)
+    private static ConversionOptions[] CreateSectionOptions(ConversionOptions options,
+        IReadOnlyList<DocxPageLayout> sectionLayouts, float[]? minimumTopMargins, float[]? minimumBottomMargins)
     {
         var sectionCount = Math.Max(1, sectionLayouts.Count);
         var sectionOptions = new ConversionOptions[sectionCount];
-        var topMargins = new float[sectionCount];
-        var bottomMargins = new float[sectionCount];
         for (var si = 0; si < sectionCount; si++)
         {
-            var sectionOptionsForMeasure = CloneConversionOptions(options);
+            var sectionOptionsForPage = CloneConversionOptions(options);
             if (si < sectionLayouts.Count)
-                ApplyPageLayout(sectionOptionsForMeasure, sectionLayouts[si]);
-            ApplyMinimumMargins(sectionOptionsForMeasure, si, minimumTopMargins, minimumBottomMargins);
-            sectionOptions[si] = sectionOptionsForMeasure;
-            topMargins[si] = sectionOptionsForMeasure.MarginTop;
-            bottomMargins[si] = sectionOptionsForMeasure.MarginBottom;
+                ApplyPageLayout(sectionOptionsForPage, sectionLayouts[si]);
+            ApplyMinimumMargins(sectionOptionsForPage, si, minimumTopMargins, minimumBottomMargins);
+            sectionOptions[si] = sectionOptionsForPage;
         }
+        return sectionOptions;
+    }
+
+    private static (float[] TopMargins, float[] BottomMargins, bool Expanded) EstimateHeaderFooterMargins(
+        DocxDocument docxDoc, ConversionOptions options, ConversionOptions[] sectionOptions,
+        int[] sectionPageIndexes, int[] sectionPageNumbers, int totalPages,
+        bool hasHeaderElements, bool hasFooterElements, bool hasSectionFooters)
+    {
+        var sectionCount = sectionOptions.Length;
+        var topMargins = sectionOptions.Select(o => o.MarginTop).ToArray();
+        var bottomMargins = sectionOptions.Select(o => o.MarginBottom).ToArray();
 
         if (!hasHeaderElements && !hasFooterElements && !hasSectionFooters)
             return (topMargins, bottomMargins, false);
