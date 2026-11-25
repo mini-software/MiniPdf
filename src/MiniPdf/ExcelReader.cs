@@ -914,12 +914,8 @@ internal static class ExcelReader
             {
                 if (fgPdf != null)
                 {
-                    var c = fgPdf.Value;
-                    // Skip pure white fills as they're invisible
-                    if (c.R < 0.99f || c.G < 0.99f || c.B < 0.99f)
-                        fills.Add(c);
-                    else
-                        fills.Add(null);
+                    // Preserve explicit white fills so they can override a table-style fill.
+                    fills.Add(fgPdf.Value);
                 }
                 else
                     fills.Add(null);
@@ -1238,15 +1234,17 @@ internal static class ExcelReader
             {
                 var patternFill = fillEl.Element(ns + "patternFill");
                 var patternType = patternFill?.Attribute("patternType")?.Value;
-                if (!string.Equals(patternType, "none", StringComparison.OrdinalIgnoreCase))
+                var bgEl = patternFill?.Element(ns + "bgColor");
+                var fgEl = patternFill?.Element(ns + "fgColor");
+                var hasFillValue = !string.Equals(patternType, "none", StringComparison.OrdinalIgnoreCase)
+                    && (!string.IsNullOrWhiteSpace(patternType) || bgEl != null || fgEl != null);
+                if (hasFillValue)
                 {
                     fillSpecified = true;
-                    var bgEl = fillEl.Descendants(ns + "bgColor").FirstOrDefault();
                     if (bgEl != null)
                         fillColor = ResolveColorElement(bgEl, themeColors);
                     if (fillColor == null)
                     {
-                        var fgEl = fillEl.Descendants(ns + "fgColor").FirstOrDefault();
                         if (fgEl != null)
                             fillColor = ResolveColorElement(fgEl, themeColors);
                     }

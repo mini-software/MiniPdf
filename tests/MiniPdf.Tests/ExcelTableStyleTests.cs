@@ -55,9 +55,33 @@ public class ExcelTableStyleTests
         Assert.False(sheet.Rows[3][1].Bold);
     }
 
-    private static MemoryStream CreateWorkbookWithStyledTable(bool stripesAndFirstColumn = false)
+    [Fact]
+    public void EmptyDataDxfFill_PreservesRowStripe()
+    {
+        using var stream = CreateWorkbookWithStyledTable(stripesAndFirstColumn: true, emptyDataPatternFill: true);
+
+        var sheet = Assert.Single(ExcelReader.ReadSheets(stream));
+
+        var stripeFill = PdfColor.FromRgb(0x00, 0xB0, 0x50);
+        Assert.Equal(stripeFill, sheet.Rows[1][0].FillColor);
+        Assert.Equal(stripeFill, sheet.Rows[1][1].FillColor);
+    }
+
+    [Fact]
+    public void ExplicitWhiteCellFill_StaysOnTopOfTableStyle()
+    {
+        using var stream = CreateWorkbookWithStyledTable();
+
+        var sheet = Assert.Single(ExcelReader.ReadSheets(stream));
+
+        Assert.Equal(PdfColor.FromRgb(0xFF, 0xFF, 0xFF), sheet.Rows[4][0].FillColor);
+        Assert.Equal(PdfColor.FromRgb(0xDD, 0xF4, 0xF9), sheet.Rows[4][1].FillColor);
+    }
+
+    private static MemoryStream CreateWorkbookWithStyledTable(bool stripesAndFirstColumn = false, bool emptyDataPatternFill = false)
     {
         var flag = stripesAndFirstColumn ? "1" : "0";
+        var dataDxfFill = emptyDataPatternFill ? "<fill><patternFill/></fill>" : string.Empty;
         var ms = new MemoryStream();
         using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
         {
@@ -114,6 +138,7 @@ public class ExcelTableStyleTests
                         <row r="2"><c r="A2" t="s"><v>3</v></c><c r="B2"><v>35</v></c><c r="C2" t="s"><v>2</v></c></row>
                         <row r="3"><c r="A3" t="s"><v>4</v></c><c r="B3"><v>25</v></c><c r="C3" t="s"><v>2</v></c></row>
                         <row r="4"><c r="A4" s="1" t="s"><v>3</v></c><c r="B4"><v>15</v></c></row>
+                        <row r="5"><c r="A5" s="2" t="s"><v>3</v></c><c r="B5"><v>10</v></c></row>
                     </sheetData>
                     <tableParts count="1"><tablePart r:id="rId1"/></tableParts>
                 </worksheet>
@@ -131,7 +156,7 @@ public class ExcelTableStyleTests
                 $"""
                 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
                 <table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
-                       id="1" name="Items" displayName="Items" ref="A1:B4" dataDxfId="0">
+                       id="1" name="Items" displayName="Items" ref="A1:B5" dataDxfId="0">
                     <tableColumns count="2">
                         <tableColumn id="1" name="Item"/>
                         <tableColumn id="2" name="Qty"/>
@@ -141,23 +166,25 @@ public class ExcelTableStyleTests
                 """);
 
             AddEntry(archive, "xl/styles.xml",
-                """
+                $"""
                 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
                 <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
                     <fonts count="1"><font><sz val="11"/><name val="Calibri"/></font></fonts>
-                    <fills count="3">
+                    <fills count="4">
                         <fill><patternFill patternType="none"/></fill>
                         <fill><patternFill patternType="gray125"/></fill>
                         <fill><patternFill patternType="solid"><fgColor rgb="FFFF0000"/></patternFill></fill>
+                        <fill><patternFill patternType="solid"><fgColor rgb="FFFFFFFF"/></patternFill></fill>
                     </fills>
                     <borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>
                     <cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
-                    <cellXfs count="2">
+                    <cellXfs count="3">
                         <xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>
                         <xf numFmtId="0" fontId="0" fillId="2" borderId="0" xfId="0" applyFill="1"/>
+                        <xf numFmtId="0" fontId="0" fillId="3" borderId="0" xfId="0" applyFill="1"/>
                     </cellXfs>
                     <dxfs count="4">
-                        <dxf><font><i/></font></dxf>
+                        <dxf><font><i/></font>{dataDxfFill}</dxf>
                         <dxf><fill><patternFill><bgColor rgb="FFDDF4F9"/></patternFill></fill></dxf>
                         <dxf><fill><patternFill><bgColor rgb="FF00B050"/></patternFill></fill></dxf>
                         <dxf><font><b/></font></dxf>
