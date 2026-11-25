@@ -733,7 +733,11 @@ internal static class ExcelReader
                 }
             }
 
-            // Data rows: apply wholeTable fill and row stripe banding
+            // Data rows: layer the wholeTable element, row stripes, the table's
+            // data format, each column's data format, then the firstColumn
+            // element. Each layer adds to the ones before it. A fill set on the
+            // cell itself is direct formatting, so it is restored after the
+            // table layers.
             var dataStart = startRow + headerRowCount;
             var dataEnd = totalsRowCount > 0 ? endRow - totalsRowCount : endRow;
             var directDataStyle = GetDxfStyle(dxfInfos, dataDxf);
@@ -747,9 +751,10 @@ internal static class ExcelReader
                 for (var c = startCol; c <= endCol && c < rows[r].Count; c++)
                 {
                     var cell = rows[r][c];
-                    if (directDataStyle != null) cell = ApplyDxfStyle(cell, directDataStyle);
-                    else if (namedWholeStyle != null) cell = ApplyDxfStyle(cell, namedWholeStyle);
+                    var ownFill = cell.FillColor;
+                    if (namedWholeStyle != null) cell = ApplyDxfStyle(cell, namedWholeStyle);
                     if (stripeStyle != null) cell = ApplyDxfStyle(cell, stripeStyle);
+                    if (directDataStyle != null) cell = ApplyDxfStyle(cell, directDataStyle);
 
                     var relativeCol = c - startCol;
                     if (relativeCol >= 0 && relativeCol < columnDataDxfs.Count &&
@@ -758,17 +763,12 @@ internal static class ExcelReader
                         cell = ApplyDxfStyle(cell, columnDataStyle);
                     }
 
-                    rows[r][c] = cell;
-                }
-            }
+                    if (c == startCol && showFirstColumn && namedFirstColStyle != null)
+                        cell = ApplyDxfStyle(cell, namedFirstColStyle);
 
-            // First column: apply firstColumn DXF style (when showFirstColumn)
-            if (showFirstColumn && namedFirstColStyle != null)
-            {
-                for (var r = dataStart; r <= dataEnd && r < rows.Count; r++)
-                {
-                    if (startCol < rows[r].Count)
-                        rows[r][startCol] = ApplyDxfStyle(rows[r][startCol], namedFirstColStyle);
+                    if (ownFill != null) cell = cell with { FillColor = ownFill };
+
+                    rows[r][c] = cell;
                 }
             }
         }
@@ -914,12 +914,8 @@ internal static class ExcelReader
             {
                 if (fgPdf != null)
                 {
-                    var c = fgPdf.Value;
-                    // Skip pure white fills as they're invisible
-                    if (c.R < 0.99f || c.G < 0.99f || c.B < 0.99f)
-                        fills.Add(c);
-                    else
-                        fills.Add(null);
+                    // Preserve explicit white fills so they can override a table-style fill.
+                    fills.Add(fgPdf.Value);
                 }
                 else
                     fills.Add(null);
@@ -1238,15 +1234,17 @@ internal static class ExcelReader
             {
                 var patternFill = fillEl.Element(ns + "patternFill");
                 var patternType = patternFill?.Attribute("patternType")?.Value;
-                if (!string.Equals(patternType, "none", StringComparison.OrdinalIgnoreCase))
+                var bgEl = patternFill?.Element(ns + "bgColor");
+                var fgEl = patternFill?.Element(ns + "fgColor");
+                var hasFillValue = !string.Equals(patternType, "none", StringComparison.OrdinalIgnoreCase)
+                    && (!string.IsNullOrWhiteSpace(patternType) || bgEl != null || fgEl != null);
+                if (hasFillValue)
                 {
                     fillSpecified = true;
-                    var bgEl = fillEl.Descendants(ns + "bgColor").FirstOrDefault();
                     if (bgEl != null)
                         fillColor = ResolveColorElement(bgEl, themeColors);
                     if (fillColor == null)
                     {
-                        var fgEl = fillEl.Descendants(ns + "fgColor").FirstOrDefault();
                         if (fgEl != null)
                             fillColor = ResolveColorElement(fgEl, themeColors);
                     }

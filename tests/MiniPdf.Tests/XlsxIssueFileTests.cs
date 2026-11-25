@@ -183,7 +183,11 @@ public class XlsxIssueFileTests
         Assert.InRange(firstStripeFill.G, 0.84f, 0.86f);
         Assert.InRange(firstStripeFill.B, 0.84f, 0.86f);
         Assert.Equal("Benefits", sheet.Rows[9][1].Text);
-        Assert.Null(sheet.Rows[9][1].FillColor);
+        // Rows between stripes keep the whole-table fill, as in the Excel reference.
+        var wholeTableFill = Assert.IsType<PdfColor>(sheet.Rows[9][1].FillColor);
+        Assert.InRange(wholeTableFill.R, 0.94f, 0.96f);
+        Assert.InRange(wholeTableFill.G, 0.94f, 0.96f);
+        Assert.InRange(wholeTableFill.B, 0.94f, 0.96f);
 
         var doc = ExcelToPdfConverter.Convert(issuePath);
         var page = doc.Pages[0];
