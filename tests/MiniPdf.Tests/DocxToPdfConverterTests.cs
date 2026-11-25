@@ -837,10 +837,26 @@ public class DocxToPdfConverterTests
         Assert.Equal(2, doc.Pages.Count);
         for (var i = 0; i < doc.Pages.Count; i++)
         {
-          var text = string.Concat(doc.Pages[i].TextBlocks.Select(b => b.Text));
-          Assert.DoesNotContain("{PAGE}", text, StringComparison.Ordinal);
-          Assert.DoesNotContain("{NUMPAGES}", text, StringComparison.Ordinal);
-          Assert.Contains($"Page {i + 1} of 2", text, StringComparison.Ordinal);
+          var textBlocks = doc.Pages[i].TextBlocks.Select(b => b.Text).ToList();
+          var text = string.Concat(textBlocks);
+          Assert.DoesNotContain("Page {PAGE} of {NUMPAGES}", text, StringComparison.Ordinal);
+          Assert.Contains($"Page {i + 1} of 2", textBlocks, StringComparer.Ordinal);
+          Assert.Contains("Use {PAGE} in the template", textBlocks, StringComparer.Ordinal);
+        }
+      }
+
+      [Fact]
+      public void Convert_FooterPageFieldsInTable_UsesSectionStartWithoutSectionFooter()
+      {
+        using var docxStream = CreateDocxWithFooterPageFieldsInTable(pageNumStart: 0);
+
+        var doc = DocxToPdfConverter.Convert(docxStream);
+
+        Assert.Equal(2, doc.Pages.Count);
+        for (var i = 0; i < doc.Pages.Count; i++)
+        {
+          var textBlocks = doc.Pages[i].TextBlocks.Select(b => b.Text).ToList();
+          Assert.Contains($"Page {i} of 2", textBlocks, StringComparer.Ordinal);
         }
       }
 
@@ -2053,7 +2069,7 @@ public class DocxToPdfConverterTests
         return ms;
     }
 
-    private static MemoryStream CreateDocxWithFooterPageFieldsInTable()
+    private static MemoryStream CreateDocxWithFooterPageFieldsInTable(int? pageNumStart = null)
     {
         var ms = new MemoryStream();
 
@@ -2087,7 +2103,7 @@ public class DocxToPdfConverterTests
                 """);
 
             AddEntry(archive, "word/document.xml",
-                """
+                $"""
                 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
                 <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
                   <w:body>
@@ -2096,6 +2112,7 @@ public class DocxToPdfConverterTests
                     <w:p><w:r><w:t>Second page</w:t></w:r></w:p>
                     <w:sectPr>
                       <w:footerReference w:type="default" r:id="rId10"/>
+                      {(pageNumStart is int start ? $"<w:pgNumType w:start=\"{start}\"/>" : string.Empty)}
                     </w:sectPr>
                   </w:body>
                 </w:document>
@@ -2132,6 +2149,16 @@ public class DocxToPdfConverterTests
                           <w:r><w:t>1</w:t></w:r>
                           <w:r><w:fldChar w:fldCharType="end"/></w:r>
                         </w:p>
+                      </w:tc>
+                    </w:tr>
+                    <w:tr>
+                      <w:tc>
+                        <w:tcPr><w:tcW w:w="3000" w:type="dxa"/></w:tcPr>
+                        <w:p><w:r><w:t>Use &#123;PAGE&#125; in the template</w:t></w:r></w:p>
+                      </w:tc>
+                      <w:tc>
+                        <w:tcPr><w:tcW w:w="3000" w:type="dxa"/></w:tcPr>
+                        <w:p/>
                       </w:tc>
                     </w:tr>
                   </w:tbl>

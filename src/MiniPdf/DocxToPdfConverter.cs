@@ -268,7 +268,8 @@ internal static class DocxToPdfConverter
         // Adjust top margin when header content is taller than the default header area
         if (!options.MarginTopOverride.HasValue && docxDoc.HeaderElements is { Count: > 0 })
         {
-            var headerContentHeight = EstimateElementsHeight(TrimTrailingEmptyParagraphs(docxDoc.HeaderElements), options, headerFooter: true);
+            var headerContentHeight = EstimateElementsHeight(TrimTrailingEmptyParagraphs(docxDoc.HeaderElements), options,
+                headerFooter: true, pageNum: int.MaxValue, totalPages: int.MaxValue);
             var headerAreaHeight = options.MarginTop - options.HeaderMargin;
             if (headerAreaHeight < 0) headerAreaHeight = 0; // header starts below marginTop
             if (headerContentHeight > headerAreaHeight)
@@ -283,7 +284,8 @@ internal static class DocxToPdfConverter
         // Adjust bottom margin when footer content is taller than the default footer area
         if (!options.MarginBottomOverride.HasValue && docxDoc.FooterElements is { Count: > 0 })
         {
-            var footerContentHeight = EstimateElementsHeight(TrimTrailingEmptyParagraphs(docxDoc.FooterElements), options, headerFooter: true);
+            var footerContentHeight = EstimateElementsHeight(TrimTrailingEmptyParagraphs(docxDoc.FooterElements), options,
+                headerFooter: true, pageNum: int.MaxValue, totalPages: int.MaxValue);
             var footerTopFromBottom = options.FooterMargin + footerContentHeight;
             if (footerTopFromBottom > options.MarginBottom)
                 options.MarginBottom = footerTopFromBottom;
@@ -484,6 +486,28 @@ internal static class DocxToPdfConverter
         var hasSectionFooters = docxDoc.SectionFooterElements is { Count: > 0 }
             && docxDoc.SectionFooterElements.Any(f => f is { Count: > 0 });
 
+        var sectionPageNumbers = Enumerable.Repeat(-1, pdfDoc.Pages.Count).ToArray();
+        for (int pi = 0; pi < sectionPageNumbers.Length; pi++)
+        {
+            int pageSectionIdx = 0;
+            for (int si = state.SectionStartPages.Count - 1; si >= 0; si--)
+            {
+                if (pi >= state.SectionStartPages[si])
+                {
+                    pageSectionIdx = si;
+                    break;
+                }
+            }
+            int ancestorIdx = pageSectionIdx;
+            while (ancestorIdx > 0 && (ancestorIdx >= sectionLayouts.Count || sectionLayouts[ancestorIdx].PageNumStart < 0))
+                ancestorIdx--;
+            if (ancestorIdx >= 0 && ancestorIdx < sectionLayouts.Count && sectionLayouts[ancestorIdx].PageNumStart >= 0)
+            {
+                int pagesFromAncestor = pi - state.SectionStartPages[ancestorIdx];
+                sectionPageNumbers[pi] = sectionLayouts[ancestorIdx].PageNumStart + pagesFromAncestor;
+            }
+        }
+
         if (hasHeaderElements || hasFooterElements || hasSectionFooters)
         {
             var totalPages = pdfDoc.Pages.Count;
@@ -498,45 +522,33 @@ internal static class DocxToPdfConverter
                 bool isFirstPageOfDoc = (pi == 0);
                 bool suppressDefaultHeader = isFirstPageOfDoc && firstPageTitlePg;
                 bool suppressDefaultFooter = isFirstPageOfDoc && firstPageTitlePg;
+                int pageSectionIdx = 0;
+                for (int si = state.SectionStartPages.Count - 1; si >= 0; si--)
+                {
+                    if (pi >= state.SectionStartPages[si])
+                    {
+                        pageSectionIdx = si;
+                        break;
+                    }
+                }
+                var sectionPageNum = sectionPageNumbers[pi];
                 if (!suppressDefaultHeader && hasHeaderElements)
                 {
                     var headerStartY = page.Height - options.HeaderMargin;
-                    RenderHeaderFooterElementsOnPage(page, options, docxDoc.HeaderElements!, headerStartY, pi, totalPages);
+                    RenderHeaderFooterElementsOnPage(page, options, docxDoc.HeaderElements!, headerStartY, pi, totalPages, sectionPageNum);
                 }
                 else if (suppressDefaultHeader && firstPageHeaderOverride is { Count: > 0 })
                 {
                     var headerStartY = page.Height - options.HeaderMargin;
-                    RenderHeaderFooterElementsOnPage(page, options, firstPageHeaderOverride, headerStartY, pi, totalPages);
+                    RenderHeaderFooterElementsOnPage(page, options, firstPageHeaderOverride, headerStartY, pi, totalPages, sectionPageNum);
                 }
 
                 // Determine footer elements for this page: prefer per-section, fall back to global
                 List<DocxElement>? pageFooterElements = null;
-                int sectionPageNum = -1;
                 if (hasSectionFooters)
                 {
-                    // Find which section this page belongs to
-                    int pageSectionIdx = 0;
-                    for (int si = state.SectionStartPages.Count - 1; si >= 0; si--)
-                    {
-                        if (pi >= state.SectionStartPages[si])
-                        {
-                            pageSectionIdx = si;
-                            break;
-                        }
-                    }
                     if (pageSectionIdx < docxDoc.SectionFooterElements!.Count)
                         pageFooterElements = docxDoc.SectionFooterElements[pageSectionIdx];
-
-                    // Calculate section-relative page number using PageNumStart
-                    // Walk backward to find nearest ancestor section with PageNumStart
-                    int ancestorIdx = pageSectionIdx;
-                    while (ancestorIdx > 0 && (ancestorIdx >= sectionLayouts.Count || sectionLayouts[ancestorIdx].PageNumStart < 0))
-                        ancestorIdx--;
-                    if (ancestorIdx >= 0 && ancestorIdx < sectionLayouts.Count && sectionLayouts[ancestorIdx].PageNumStart >= 0)
-                    {
-                        int pagesFromAncestor = pi - state.SectionStartPages[ancestorIdx];
-                        sectionPageNum = sectionLayouts[ancestorIdx].PageNumStart + pagesFromAncestor;
-                    }
                 }
                 // Fall back to global footer if no section-specific footer
                 if (pageFooterElements == null && hasFooterElements)
@@ -553,7 +565,9 @@ internal static class DocxToPdfConverter
                         || (e is DocxParagraph pp && (pp.Runs.Any(r => !string.IsNullOrWhiteSpace(r.Text)) || pp.Images.Count > 0))))
                 {
                     var trimmedFooter = TrimTrailingEmptyParagraphs(pageFooterElements);
-                    var footerContentHeight = EstimateElementsHeight(trimmedFooter, options, headerFooter: true);
+                    var effectivePageNum = sectionPageNum >= 0 ? sectionPageNum : pi + 1;
+                    var footerContentHeight = EstimateElementsHeight(trimmedFooter, options, headerFooter: true,
+                        pageNum: effectivePageNum, totalPages: totalPages);
                     var footerStartY = options.FooterMargin + footerContentHeight;
                     RenderHeaderFooterElementsOnPage(page, options, trimmedFooter, footerStartY, pi, totalPages, sectionPageNum);
                 }
@@ -567,18 +581,19 @@ internal static class DocxToPdfConverter
             for (int pi = 0; pi < totalPages; pi++)
             {
                 var page = pdfDoc.Pages[pi];
+                var sectionPageNum = sectionPageNumbers[pi];
                 var usableW = page.Width - options.MarginLeft - options.MarginRight;
                 if (!hasHeaderElements && docxDoc.HeaderText != null)
                 {
                     RenderHeaderFooterRuns(page, options, docxDoc.HeaderRuns, docxDoc.HeaderText,
                         pi, totalPages, headerFooterFontSize, headerColor, usableW,
-                        page.Height - options.HeaderMargin);
+                        page.Height - options.HeaderMargin, sectionPageNum);
                 }
                 if (!hasFooterElements && docxDoc.FooterText != null)
                 {
                     RenderHeaderFooterRuns(page, options, docxDoc.FooterRuns, docxDoc.FooterText,
                         pi, totalPages, headerFooterFontSize, headerColor, usableW,
-                        options.FooterMargin);
+                        options.FooterMargin, sectionPageNum);
                 }
             }
         }
@@ -592,7 +607,7 @@ internal static class DocxToPdfConverter
     /// </summary>
     private static void RenderHeaderFooterRuns(PdfPage page, ConversionOptions options,
         List<DocxRun>? runs, string plainText,
-        int pageIndex, int totalPages, float fontSize, PdfColor color, float usableW, float y)
+        int pageIndex, int totalPages, float fontSize, PdfColor color, float usableW, float y, int sectionPageNum = -1)
     {
         if (runs != null && runs.Count > 0)
         {
@@ -600,7 +615,8 @@ internal static class DocxToPdfConverter
             var resolvedRuns = new List<(string Text, bool Bold, bool Italic, string? FontName)>();
             foreach (var run in runs)
             {
-                var text = ResolvePagePlaceholders(run.Text, pageIndex + 1, totalPages);
+                var pageNum = sectionPageNum >= 0 ? sectionPageNum : pageIndex + 1;
+                var text = ResolvePageNumberField(run, pageNum, totalPages);
                 if (text == "\n") continue; // skip paragraph breaks for width calc
                 resolvedRuns.Add((text, run.Bold, run.Italic, run.FontName));
             }
@@ -620,12 +636,9 @@ internal static class DocxToPdfConverter
         else
         {
             // Fallback: plain text without formatting
-            var resolved = plainText
-                .Replace("{PAGE}", (pageIndex + 1).ToString())
-                .Replace("{NUMPAGES}", totalPages.ToString());
-            var textWidth = EstimateTextWidth(resolved, fontSize);
+            var textWidth = EstimateTextWidth(plainText, fontSize);
             var x = options.MarginLeft + (usableW - textWidth) / 2;
-            page.AddText(resolved, x, y, fontSize, color);
+            page.AddText(plainText, x, y, fontSize, color);
         }
     }
 
@@ -2587,6 +2600,7 @@ internal static class DocxToPdfConverter
                 && !current.IsPageBreak && !next.IsPageBreak
                 && !current.IsColumnBreak && !next.IsColumnBreak
                 && current.FootnoteId == null && next.FootnoteId == null
+                && !current.IsPageNumberField && !next.IsPageNumberField
                 && !current.Text.Contains('\t') && !next.Text.Contains('\t'))
             {
                 // When the current run is whitespace-only, adopt the next run's
@@ -3718,7 +3732,8 @@ internal static class DocxToPdfConverter
     /// Estimates the total height of a list of elements (paragraphs + tables)
     /// for header/footer sizing calculations.
     /// </summary>
-    private static float EstimateElementsHeight(List<DocxElement> elements, ConversionOptions options, bool headerFooter = false)
+    private static float EstimateElementsHeight(List<DocxElement> elements, ConversionOptions options, bool headerFooter = false,
+        int pageNum = 1, int totalPages = 1)
     {
         const float emuPerPt = 914400f / 72f;
         float totalHeight = 0;
@@ -3755,15 +3770,16 @@ internal static class DocxToPdfConverter
                         if (imgW > usableW) imgH *= usableW / imgW;
                         totalHeight += imgH + 1f;
                     }
-                    var text = string.Concat(para.Runs.Select(r => r.Text));
+                    var text = headerFooter
+                        ? ResolvePageNumberFields(para.Runs, pageNum, totalPages, forHeightEstimate: true)
+                        : string.Concat(para.Runs.Select(r => r.Text));
                     if (!string.IsNullOrEmpty(text))
                     {
                         // Header/footer paragraphs wrap at render time; reserve every line.
                         // Floating text-box paragraphs (TextBoxWidth > 0) overlay the page and
                         // must not grow the reserved area, so they keep the one-line estimate.
-                        // Page numbers are unknown here, so placeholders resolve as page 1 of 1.
                         var lineCount = headerFooter && para.TextBoxWidth <= 0
-                            ? WrapHeaderFooterText(para, ResolvePagePlaceholders(text, 1, 1), options, usableW).Count
+                            ? WrapHeaderFooterText(para, text, options, usableW).Count
                             : 1;
                         totalHeight += lineHeight * lineCount;
                     }
@@ -3782,8 +3798,7 @@ internal static class DocxToPdfConverter
                     var colWidths = CalculateTableColumnWidths(table, effectiveTableWidth);
                     var cellPaddingH = (table.CellMarginLeft + table.CellMarginRight) / 2;
                     var cellPaddingV = Math.Max(0f, Math.Max(table.CellMarginTop, table.CellMarginBottom));
-                    // Page numbers are unknown here, so placeholders resolve as page 1 of 1.
-                    var measuredTable = ResolveTablePagePlaceholders(table, 1, 1);
+                    var measuredTable = ResolveTablePagePlaceholders(table, pageNum, totalPages, forHeightEstimate: headerFooter);
                     for (var rowIndex = 0; rowIndex < table.Rows.Count; rowIndex++)
                     {
                         var row = measuredTable.Rows[rowIndex];
@@ -3930,9 +3945,8 @@ internal static class DocxToPdfConverter
                         y -= imgH + 1f;
                     }
                     // Render text runs (resolve page-number placeholders)
-                    var effectivePageNum = sectionPageNum > 0 ? sectionPageNum : (pageIndex + 1);
-                    var text = string.Concat(para.Runs.Select(r => r.Text));
-                    text = ResolvePagePlaceholders(text, effectivePageNum, totalPages);
+                    var effectivePageNum = sectionPageNum >= 0 ? sectionPageNum : (pageIndex + 1);
+                    var text = ResolvePageNumberFields(para.Runs, effectivePageNum, totalPages);
                     if (!string.IsNullOrEmpty(text))
                     {
                         var fontSize = para.FontSize > 0 ? para.FontSize : options.FontSize;
@@ -3968,7 +3982,7 @@ internal static class DocxToPdfConverter
                 }
                 case DocxTable table:
                 {
-                    var effectivePageNum = sectionPageNum > 0 ? sectionPageNum : (pageIndex + 1);
+                    var effectivePageNum = sectionPageNum >= 0 ? sectionPageNum : (pageIndex + 1);
                     y = RenderHeaderFooterTable(page, options, ResolveTablePagePlaceholders(table, effectivePageNum, totalPages), y);
                     lastSpacingAfter = 0;
                     isFirst = false;
@@ -5840,14 +5854,15 @@ internal static class DocxToPdfConverter
     /// header/footer table are computed from the text that is drawn. The table itself is returned
     /// when no cell carries a placeholder.
     /// </summary>
-    private static DocxTable ResolveTablePagePlaceholders(DocxTable table, int pageNum, int totalPages)
+    private static DocxTable ResolveTablePagePlaceholders(DocxTable table, int pageNum, int totalPages,
+        bool forHeightEstimate = false)
     {
         var hasPlaceholder = false;
         foreach (var row in table.Rows)
             foreach (var cell in row.Cells)
                 foreach (var para in cell.Paragraphs)
                     foreach (var run in para.Runs)
-                        if (run.Text.Contains("{PAGE") || run.Text.Contains("{NUMPAGES}"))
+                        if (run.IsPageNumberField)
                             hasPlaceholder = true;
         if (!hasPlaceholder)
             return table;
@@ -5863,7 +5878,7 @@ internal static class DocxToPdfConverter
                 {
                     var runs = new List<DocxRun>(para.Runs.Count);
                     foreach (var run in para.Runs)
-                        runs.Add(run with { Text = ResolvePagePlaceholders(run.Text, pageNum, totalPages) });
+                        runs.Add(run with { Text = ResolvePageNumberField(run, pageNum, totalPages, forHeightEstimate) });
                     paragraphs.Add(para with { Runs = runs });
                 }
                 cells.Add(cell with { Paragraphs = paragraphs });
@@ -5871,6 +5886,23 @@ internal static class DocxToPdfConverter
             rows.Add(row with { Cells = cells });
         }
         return table with { Rows = rows };
+    }
+
+    private static string ResolvePageNumberFields(IEnumerable<DocxRun> runs, int pageNum, int totalPages,
+        bool forHeightEstimate = false)
+    {
+        return string.Concat(runs.Select(run => ResolvePageNumberField(run, pageNum, totalPages, forHeightEstimate)));
+    }
+
+    private static string ResolvePageNumberField(DocxRun run, int pageNum, int totalPages, bool forHeightEstimate = false)
+    {
+        if (!run.IsPageNumberField)
+            return run.Text;
+
+        if (forHeightEstimate && (run.Text.Contains("{PAGE:roman}") || run.Text.Contains("{PAGE:ROMAN}")))
+            pageNum = Math.Min(pageNum, 9999);
+
+        return ResolvePagePlaceholders(run.Text, pageNum, totalPages);
     }
 
     /// <summary>

@@ -1531,7 +1531,7 @@ internal static class DocxReader
                 placeholder = instr.Contains("\\* ROMAN") ? "{PAGE:ROMAN}" : "{PAGE:roman}";
         }
 
-        runs.Add(new DocxRun(placeholder, bold, italic, fontSize, color));
+        runs.Add(new DocxRun(placeholder, bold, italic, fontSize, color, IsPageNumberField: true));
     }
 
     private static void ExpandTocPlaceholders(List<DocxElement> elements, DocxPageLayout? pageLayout)
@@ -5338,7 +5338,8 @@ internal sealed record DocxRun(
     float VerticalPosition = 0,
     string? FootnoteId = null,
     PdfColor? Shading = null,
-    string? Link = null
+    string? Link = null,
+    bool IsPageNumberField = false
 );
 
 /// <summary>Represents a footnote definition parsed from word/footnotes.xml.</summary>
