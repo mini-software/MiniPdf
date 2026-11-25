@@ -339,6 +339,9 @@ internal static class DocxToPdfConverter
                             // Continuous sections don't force a new page
                             if (nextLayout.SectionType == "continuous")
                             {
+                                state.BaseMarginBottom = state.Options.MarginBottom;
+                                state.Options.MarginBottom = state.BaseMarginBottom + state.FootnoteReservedHeight;
+
                                 // Enter multi-column if applicable
                                 if (nextLayout.ColumnCount > 1)
                                     state.EnterMultiColumnSection(nextLayout.ColumnCount, nextLayout.ColumnSpacing, nextLayout.ColumnWidths, nextLayout.ColumnGaps);

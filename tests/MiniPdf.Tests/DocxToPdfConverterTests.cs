@@ -873,6 +873,31 @@ public class DocxToPdfConverterTests
       }
 
       [Fact]
+      public void Convert_ContinuousSectionKeepsFooterMarginAfterPageBreaks()
+      {
+        using var docxStream = CreateDocxWithFooterPageFieldsInTable(
+            bodyParagraphCount: 8, continuousSection: true, secondPageParagraphCount: 55);
+
+        var doc = DocxToPdfConverter.Convert(docxStream);
+
+        Assert.True(doc.Pages.Count >= 3);
+        Assert.Contains(doc.Pages.Skip(1), page => page.TextBlocks.Any(b => b.Text == "After break line."));
+        for (var pageIndex = 0; pageIndex < doc.Pages.Count; pageIndex++)
+        {
+          var page = doc.Pages[pageIndex];
+          var footerBlocks = page.TextBlocks
+              .Where(b => b.Text.StartsWith("Page ", StringComparison.Ordinal))
+              .ToList();
+          Assert.NotEmpty(footerBlocks);
+          var footerTop = footerBlocks
+              .Select(b => b.Y + b.FontSize)
+              .Max();
+          foreach (var bodyLine in page.TextBlocks.Where(b => b.Text is "Body line." or "After break line."))
+            Assert.True(bodyLine.Y > footerTop + 4f, $"Body text overlaps the footer on page {pageIndex + 1}.");
+        }
+      }
+
+      [Fact]
       public void Convert_EmptyTocField_GeneratesHeadingEntries()
       {
         using var docxStream = CreateDocxWithEmptyTocField();
@@ -2081,11 +2106,20 @@ public class DocxToPdfConverterTests
         return ms;
     }
 
-    private static MemoryStream CreateDocxWithFooterPageFieldsInTable(int? pageNumStart = null, int bodyParagraphCount = 0)
+    private static MemoryStream CreateDocxWithFooterPageFieldsInTable(int? pageNumStart = null, int bodyParagraphCount = 0,
+        bool continuousSection = false, int secondPageParagraphCount = 0)
     {
         var ms = new MemoryStream();
         var bodyParagraphs = string.Concat(Enumerable.Repeat(
             "<w:p><w:r><w:t>Body line.</w:t></w:r></w:p>", bodyParagraphCount));
+        var afterPageBreakParagraphs = string.Concat(Enumerable.Repeat(
+            "<w:p><w:r><w:t>After break line.</w:t></w:r></w:p>", secondPageParagraphCount));
+        var continuousSectionBreak = continuousSection
+            ? "<w:p><w:pPr><w:sectPr><w:pgMar w:top=\"1440\" w:right=\"1440\" w:bottom=\"1440\" w:left=\"1440\" w:footer=\"720\"/></w:sectPr></w:pPr></w:p>"
+            : string.Empty;
+        var continuousSectionLayout = continuousSection
+            ? "<w:type w:val=\"continuous\"/><w:pgMar w:top=\"1440\" w:right=\"1440\" w:bottom=\"1440\" w:left=\"1440\" w:footer=\"2880\"/>"
+            : string.Empty;
 
         using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
         {
@@ -2122,12 +2156,15 @@ public class DocxToPdfConverterTests
                 <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
                   <w:body>
                     <w:p><w:r><w:t>First page</w:t></w:r></w:p>
+                    {continuousSectionBreak}
                     {bodyParagraphs}
                     <w:p><w:r><w:br w:type="page"/></w:r></w:p>
                     <w:p><w:r><w:t>Second page</w:t></w:r></w:p>
+                    {afterPageBreakParagraphs}
                     <w:sectPr>
                       <w:footerReference w:type="default" r:id="rId10"/>
                       {(pageNumStart is int start ? $"<w:pgNumType w:start=\"{start}\"/>" : string.Empty)}
+                      {continuousSectionLayout}
                     </w:sectPr>
                   </w:body>
                 </w:document>
