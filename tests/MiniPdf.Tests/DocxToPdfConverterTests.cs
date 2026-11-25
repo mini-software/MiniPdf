@@ -828,6 +828,76 @@ public class DocxToPdfConverterTests
       }
 
       [Fact]
+      public void Convert_FooterPageFieldsInTable_RendersPageNumbers()
+      {
+        using var docxStream = CreateDocxWithFooterPageFieldsInTable();
+
+        var doc = DocxToPdfConverter.Convert(docxStream);
+
+        Assert.Equal(2, doc.Pages.Count);
+        for (var i = 0; i < doc.Pages.Count; i++)
+        {
+          var textBlocks = doc.Pages[i].TextBlocks.Select(b => b.Text).ToList();
+          var text = string.Concat(textBlocks);
+          Assert.DoesNotContain("Page {PAGE}", text, StringComparison.Ordinal);
+          Assert.DoesNotContain("of {NUMPAGES}", text, StringComparison.Ordinal);
+          Assert.Contains($"Page {i + 1} of 2", textBlocks, StringComparer.Ordinal);
+          Assert.Contains("Use {PAGE} in the template", textBlocks, StringComparer.Ordinal);
+        }
+      }
+
+      [Fact]
+      public void Convert_FooterPageFieldsInTable_UsesSectionStartWithoutSectionFooter()
+      {
+        using var docxStream = CreateDocxWithFooterPageFieldsInTable(pageNumStart: 0);
+
+        var doc = DocxToPdfConverter.Convert(docxStream);
+
+        Assert.Equal(2, doc.Pages.Count);
+        for (var i = 0; i < doc.Pages.Count; i++)
+        {
+          var textBlocks = doc.Pages[i].TextBlocks.Select(b => b.Text).ToList();
+          Assert.Contains($"Page {i} of 2", textBlocks, StringComparer.Ordinal);
+        }
+      }
+
+      [Fact]
+      public void Convert_FooterPageFieldsInTable_PreservesBodyWhenResolvedFooterFits()
+      {
+        using var docxStream = CreateDocxWithFooterPageFieldsInTable(bodyParagraphCount: 42);
+
+        var doc = DocxToPdfConverter.Convert(docxStream);
+
+        Assert.Equal(2, doc.Pages.Count);
+        Assert.Equal(42, doc.Pages[0].TextBlocks.Count(b => b.Text == "Body line."));
+      }
+
+      [Fact]
+      public void Convert_ContinuousSectionKeepsFooterMarginAfterPageBreaks()
+      {
+        using var docxStream = CreateDocxWithFooterPageFieldsInTable(
+            bodyParagraphCount: 8, continuousSection: true, secondPageParagraphCount: 55);
+
+        var doc = DocxToPdfConverter.Convert(docxStream);
+
+        Assert.True(doc.Pages.Count >= 3);
+        Assert.Contains(doc.Pages.Skip(1), page => page.TextBlocks.Any(b => b.Text == "After break line."));
+        for (var pageIndex = 0; pageIndex < doc.Pages.Count; pageIndex++)
+        {
+          var page = doc.Pages[pageIndex];
+          var footerBlocks = page.TextBlocks
+              .Where(b => b.Text.StartsWith("Page ", StringComparison.Ordinal))
+              .ToList();
+          Assert.NotEmpty(footerBlocks);
+          var footerTop = footerBlocks
+              .Select(b => b.Y + b.FontSize)
+              .Max();
+          foreach (var bodyLine in page.TextBlocks.Where(b => b.Text is "Body line." or "After break line."))
+            Assert.True(bodyLine.Y > footerTop + 4f, $"Body text overlaps the footer on page {pageIndex + 1}.");
+        }
+      }
+
+      [Fact]
       public void Convert_EmptyTocField_GeneratesHeadingEntries()
       {
         using var docxStream = CreateDocxWithEmptyTocField();
@@ -2028,6 +2098,123 @@ public class DocxToPdfConverterTests
                     <w:r><w:t>9</w:t></w:r>
                     <w:r><w:fldChar w:fldCharType="end"/></w:r>
                   </w:p>
+                </w:ftr>
+                """);
+        }
+
+        ms.Position = 0;
+        return ms;
+    }
+
+    private static MemoryStream CreateDocxWithFooterPageFieldsInTable(int? pageNumStart = null, int bodyParagraphCount = 0,
+        bool continuousSection = false, int secondPageParagraphCount = 0)
+    {
+        var ms = new MemoryStream();
+        var bodyParagraphs = string.Concat(Enumerable.Repeat(
+            "<w:p><w:r><w:t>Body line.</w:t></w:r></w:p>", bodyParagraphCount));
+        var afterPageBreakParagraphs = string.Concat(Enumerable.Repeat(
+            "<w:p><w:r><w:t>After break line.</w:t></w:r></w:p>", secondPageParagraphCount));
+        var continuousSectionBreak = continuousSection
+            ? "<w:p><w:pPr><w:sectPr><w:pgMar w:top=\"1440\" w:right=\"1440\" w:bottom=\"1440\" w:left=\"1440\" w:footer=\"720\"/></w:sectPr></w:pPr></w:p>"
+            : string.Empty;
+        var continuousSectionLayout = continuousSection
+            ? "<w:type w:val=\"continuous\"/><w:pgMar w:top=\"1440\" w:right=\"1440\" w:bottom=\"1440\" w:left=\"1440\" w:footer=\"2880\"/>"
+            : string.Empty;
+
+        using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
+        {
+            AddEntry(archive, "[Content_Types].xml",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+                  <Default Extension="xml" ContentType="application/xml"/>
+                  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+                  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+                  <Override PartName="/word/footer1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml"/>
+                </Types>
+                """);
+
+            AddEntry(archive, "_rels/.rels",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+                </Relationships>
+                """);
+
+            AddEntry(archive, "word/_rels/document.xml.rels",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                  <Relationship Id="rId10" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer" Target="footer1.xml"/>
+                </Relationships>
+                """);
+
+            AddEntry(archive, "word/document.xml",
+                $"""
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+                  <w:body>
+                    <w:p><w:r><w:t>First page</w:t></w:r></w:p>
+                    {continuousSectionBreak}
+                    {bodyParagraphs}
+                    <w:p><w:r><w:br w:type="page"/></w:r></w:p>
+                    <w:p><w:r><w:t>Second page</w:t></w:r></w:p>
+                    {afterPageBreakParagraphs}
+                    <w:sectPr>
+                      <w:footerReference w:type="default" r:id="rId10"/>
+                      {(pageNumStart is int start ? $"<w:pgNumType w:start=\"{start}\"/>" : string.Empty)}
+                      {continuousSectionLayout}
+                    </w:sectPr>
+                  </w:body>
+                </w:document>
+                """);
+
+            AddEntry(archive, "word/footer1.xml",
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <w:ftr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                  <w:tbl>
+                    <w:tblPr><w:tblW w:w="6000" w:type="dxa"/></w:tblPr>
+                    <w:tblGrid>
+                      <w:gridCol w:w="3000"/>
+                      <w:gridCol w:w="3000"/>
+                    </w:tblGrid>
+                    <w:tr>
+                      <w:tc>
+                        <w:tcPr><w:tcW w:w="3000" w:type="dxa"/></w:tcPr>
+                        <w:p><w:r><w:t>Document no: 1</w:t></w:r></w:p>
+                      </w:tc>
+                      <w:tc>
+                        <w:tcPr><w:tcW w:w="3000" w:type="dxa"/></w:tcPr>
+                        <w:p>
+                          <w:r><w:t xml:space="preserve">Page </w:t></w:r>
+                          <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+                          <w:r><w:instrText> PAGE </w:instrText></w:r>
+                          <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+                          <w:r><w:t>1</w:t></w:r>
+                          <w:r><w:fldChar w:fldCharType="end"/></w:r>
+                          <w:r><w:t xml:space="preserve"> of </w:t></w:r>
+                          <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+                          <w:r><w:instrText> NUMPAGES </w:instrText></w:r>
+                          <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+                          <w:r><w:t>1</w:t></w:r>
+                          <w:r><w:fldChar w:fldCharType="end"/></w:r>
+                        </w:p>
+                      </w:tc>
+                    </w:tr>
+                    <w:tr>
+                      <w:tc>
+                        <w:tcPr><w:tcW w:w="3000" w:type="dxa"/></w:tcPr>
+                        <w:p><w:r><w:t>Use &#123;PAGE&#125; in the template</w:t></w:r></w:p>
+                      </w:tc>
+                      <w:tc>
+                        <w:tcPr><w:tcW w:w="3000" w:type="dxa"/></w:tcPr>
+                        <w:p/>
+                      </w:tc>
+                    </w:tr>
+                  </w:tbl>
+                  <w:p/>
                 </w:ftr>
                 """);
         }
