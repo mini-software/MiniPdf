@@ -2534,7 +2534,7 @@ internal sealed class PdfWriter
                             if (offPos + 4 > ttf.Length) break;
                             int fontOff = (ttf[offPos] << 24) | (ttf[offPos+1] << 16) | (ttf[offPos+2] << 8) | ttf[offPos+3];
                             var (fam, full) = ReadFontNames(ttf, fontOff);
-                            if (!string.IsNullOrEmpty(full))  { var k = NormalizeFontName(full);  if (!result.ContainsKey(k)) result[k] = file; }
+                            if (!string.IsNullOrEmpty(full))  result[NormalizeFontName(full)] = file;
                             if (!string.IsNullOrEmpty(fam))   { var k = NormalizeFontName(fam);   if (!result.ContainsKey(k)) result[k] = file; }
                         }
                     }
@@ -2542,7 +2542,7 @@ internal sealed class PdfWriter
                 }
                 var (family, fullName) = ReadFontNames(ttf, 0);
                 if (!string.IsNullOrEmpty(fullName))
-                    { var k = NormalizeFontName(fullName);   if (!result.ContainsKey(k)) result[k] = file; }
+                    result[NormalizeFontName(fullName)] = file;
                 if (!string.IsNullOrEmpty(family))
                     { var k = NormalizeFontName(family);     if (!result.ContainsKey(k)) result[k] = file; }
             }
