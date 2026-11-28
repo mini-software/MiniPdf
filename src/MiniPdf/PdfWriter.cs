@@ -3969,7 +3969,7 @@ internal sealed class PdfWriter
     /// </summary>
     private static bool HasUsableGlyph(byte[] ttf, int codePoint, ushort gid)
     {
-        if (codePoint is ' ' or 0x00A0 or 0x2009) return true;
+        if (codePoint <= char.MaxValue && char.IsWhiteSpace((char)codePoint)) return true;
         return HasGlyphOutline(ttf, gid);
     }
 
